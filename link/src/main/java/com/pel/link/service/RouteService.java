@@ -1,7 +1,10 @@
 package com.pel.link.service;
 
+import com.pel.link.Application;
+
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -14,8 +17,12 @@ public class RouteService {
     static Properties properties = new Properties();
 
     public static void getRoutes() throws IOException {
-        FileInputStream file = new FileInputStream("src/main/resources/route.properties");
-        properties.load(file);
+        try {
+            InputStream file = Application.class.getClassLoader().getResourceAsStream("route.properties");
+            properties.load(file);
+        } catch (NullPointerException err) {
+            FileInputStream file = new FileInputStream("src/main/resources/route.properties");
+        }
     }
 
     public static String matchRoute(String route) {

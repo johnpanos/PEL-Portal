@@ -39,14 +39,21 @@ public class Application {
         MigrationService.v1(db);
 
         // Firebase admin time
-        FileInputStream serviceAccount = new FileInputStream("src/main/resources/serviceAccountKey.json");
-
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setProjectId("pacific-esports")
-                .build();
-
-        FirebaseApp.initializeApp(options);
+        try {
+            InputStream serviceAccount = Application.class.getClassLoader().getResourceAsStream("serviceAccountKey.json");
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setProjectId("pacific-esports")
+                    .build();
+            FirebaseApp.initializeApp(options);
+        } catch (NullPointerException err) {
+            FileInputStream serviceAccount = new FileInputStream("src/main/resources/serviceAccountKey.json");
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setProjectId("pacific-esports")
+                    .build();
+            FirebaseApp.initializeApp(options);
+        }
 
         Constants.tokenList = AuthService.getAllTokens();
         RouteService.getRoutes();
