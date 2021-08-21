@@ -23,11 +23,9 @@ public class UserController {
         getAllUsers();
         getUser();
         createUser();
-//        updateUser();
         getAllUserTeams();
         addUserTeam();
         removeUserTeam();
-        verifyUserTeam();
     }
 
     private void getAllUsers() {
@@ -53,45 +51,30 @@ public class UserController {
     private void createUser() {
         post("/users", (req, res) -> {
             User user = gson.fromJson(req.body(), User.class);
+            System.out.println("PARSED USER: " + gson.toJson(user));
+            if (user.id == null && user.connections.userId == null && user.verification.userId == null) {
+                res.status(400);
+                res.body("{\"message\": \"User object missing id\"}");
+                return res;
+            }
+            // weird ternary cuz system for determine which inner object to update is scuffed
+            String userId = user.id != null ? user.id : user.connections.userId != null ? user.connections.userId : user.verification.userId;
+            if (UserService.getUser(userId).id != null) {
+                user.updatedAt = Timestamp.valueOf(LocalDateTime.now());
+                UserService.updateUser(user);
+                user = UserService.getUser(userId);
+                res.status(200);
+                res.body(gson.toJson(user));
+                return res;
+            }
             user.createdAt = Timestamp.valueOf(LocalDateTime.now());
             user.updatedAt = Timestamp.valueOf(LocalDateTime.now());
-            System.out.println("PARSED USER: " + gson.toJson(user));
-            if (gson.toJson(user).contains("null")) {
-                res.status(400);
-                res.body("{\"message\": \"Request body missing or contains null values\"}");
-                return res;
-            }
-            if (UserService.getUser(user.id).id != null) {
-                res.status(409);
-                res.body("{\"message\": \"User already exists with this id\"}");
-                return res;
-            }
             UserService.addUser(user);
             res.status(200);
             res.body(gson.toJson(user));
             return res;
         });
     }
-
-//    private void updateUser() {
-//        put("/api/users/:id", (req, res) -> {
-//            User user = gson.fromJson(req.body(), User.class);
-//            if (user.toString().contains("null")) {
-//                res.status(400);
-//                res.body(StandardResponse.error("Request body contains missing or null values", null));
-//                return res;
-//            }
-//            if (UserService.getUser(req.params(":id")).toString().contains("null")) {
-//                res.status(404);
-//                res.body(StandardResponse.error("Requested user could not be found", null));
-//                return res;
-//            }
-//            UserService.updateUser(user);
-//            res.status(200);
-//            res.body(StandardResponse.success("User was successfully updated!", null));
-//            return res;
-//        });
-//    }
 
     private void getAllUserTeams() {
         get("/users/:id/teams", (req, res) -> {
@@ -107,7 +90,7 @@ public class UserController {
                 res.body("{\"message\": \"Requested user could not be found\"}");
                 return res;
             }
-            if (TeamService.getTeam(req.params(":tid")).id == null) {
+            if (TeamService.getTeam(Integer.parseInt(req.params(":tid"))).id == null) {
                 res.status(404);
                 res.body("{\"message\": \"Requested team could not be found\"}");
                 return res;
@@ -125,7 +108,7 @@ public class UserController {
                 res.body("{\"message\": \"Requested user could not be found\"}");
                 return res;
             }
-            if (TeamService.getTeam(req.params(":tid")).id == null) {
+            if (TeamService.getTeam(Integer.parseInt(req.params(":tid"))).id == null) {
                 res.status(404);
                 res.body("{\"message\": \"Requested team could not be found\"}");
                 return res;
@@ -136,21 +119,4 @@ public class UserController {
         });
     }
 
-    private void verifyUserTeam() {
-        post("/users/:uid/teams/:tid/verify", (req, res) -> {
-            if (UserService.getUser(req.params(":uid")).id == null) {
-                res.status(404);
-                res.body("{\"message\": \"Requested user could not be found\"}");
-                return res;
-            }
-            if (TeamService.getTeam(req.params(":tid")).id == null) {
-                res.status(404);
-                res.body("{\"message\": \"Requested team could not be found\"}");
-                return res;
-            }
-            UserService.verifyUserTeam(req.params(":uid"), Integer.parseInt(req.params(":tid")));
-            res.body(gson.toJson(UserService.getAllUserTeams(req.params(":uid"))));
-            return res;
-        });
-    }
 }

@@ -35,7 +35,8 @@ public class UserService {
             user.firstName = (rs.getString("first_name"));
             user.lastName = (rs.getString("last_name"));
             user.email = (rs.getString("email"));
-            user.emailVerified = (rs.getBoolean("email_verified"));
+            user.school = (rs.getString("school"));
+            user.gradYear = (rs.getInt("grad_year"));
             user.gender = (rs.getString("gender"));
             user.profilePicture = (rs.getString("profile_picture"));
             user.createdAt = (rs.getTimestamp("created_at"));
@@ -47,6 +48,31 @@ public class UserService {
                 user.roles.add(rs2.getString("role"));
             }
             rs2.close();
+            // Get Connections for User
+            String connectionsSql = "select * from connection where connection.user_id='" + user.id + "'";
+            ResultSet rs3 = db.createStatement().executeQuery(connectionsSql);
+            while (rs3.next()) {
+                user.connections.userId = (rs3.getString("user_id"));
+                user.connections.discordId = (rs3.getInt("discord_id"));
+                user.connections.discordTag = (rs3.getString("discord_tag"));
+                user.connections.discordToken = (rs3.getString("discord_token"));
+                user.connections.riotId = (rs3.getString("riot_id"));
+                user.connections.battleTag = (rs3.getString("battle_tag"));
+                user.connections.battleToken = (rs3.getString("battle_token"));
+                user.connections.rocketId = (rs3.getString("rocket_id"));
+            }
+            rs3.close();
+            // Get Verification for User
+            String verificationSql = "select * from verification where verification.user_id='" + user.id + "'";
+            ResultSet rs4 = db.createStatement().executeQuery(verificationSql);
+            while (rs4.next()) {
+                user.verification.userId = (rs4.getString("user_id"));
+                user.verification.fileUrl = (rs4.getString("file_url"));
+                user.verification.status = (rs4.getString("status"));
+                user.verification.createdAt = (rs4.getTimestamp("created_at"));
+                user.verification.updatedAt = (rs4.getTimestamp("updated_at"));
+            }
+            rs4.close();
             returnList.add(user);
         }
         rs.close();
@@ -62,7 +88,8 @@ public class UserService {
             user.firstName = (rs.getString("first_name"));
             user.lastName = (rs.getString("last_name"));
             user.email = (rs.getString("email"));
-            user.emailVerified = (rs.getBoolean("email_verified"));
+            user.school = (rs.getString("school"));
+            user.gradYear = (rs.getInt("grad_year"));
             user.gender = (rs.getString("gender"));
             user.profilePicture = (rs.getString("profile_picture"));
             user.createdAt = (rs.getTimestamp("created_at"));
@@ -74,6 +101,31 @@ public class UserService {
                 user.roles.add(rs2.getString("role"));
             }
             rs2.close();
+            // Get Connections for User
+            String connectionsSql = "select * from connection where connection.user_id='" + user.id + "'";
+            ResultSet rs3 = db.createStatement().executeQuery(connectionsSql);
+            while (rs3.next()) {
+                user.connections.userId = (rs3.getString("user_id"));
+                user.connections.discordId = (rs3.getInt("discord_id"));
+                user.connections.discordTag = (rs3.getString("discord_tag"));
+                user.connections.discordToken = (rs3.getString("discord_token"));
+                user.connections.riotId = (rs3.getString("riot_id"));
+                user.connections.battleTag = (rs3.getString("battle_tag"));
+                user.connections.battleToken = (rs3.getString("battle_token"));
+                user.connections.rocketId = (rs3.getString("rocket_id"));
+            }
+            rs3.close();
+            // Get Verification for User
+            String verificationSql = "select * from verification where verification.user_id='" + user.id + "'";
+            ResultSet rs4 = db.createStatement().executeQuery(verificationSql);
+            while (rs4.next()) {
+                user.verification.userId = (rs4.getString("user_id"));
+                user.verification.fileUrl = (rs4.getString("file_url"));
+                user.verification.status = (rs4.getString("status"));
+                user.verification.createdAt = (rs4.getTimestamp("created_at"));
+                user.verification.updatedAt = (rs4.getTimestamp("updated_at"));
+            }
+            rs4.close();
         }
         rs.close();
         return user;
@@ -86,7 +138,8 @@ public class UserService {
                 "'" + user.firstName + "'," +
                 "'" + user.lastName + "'," +
                 "'" + user.email + "'," +
-                user.emailVerified + "," +
+                "'" + user.school + "'," +
+                user.gradYear + "," +
                 "'" + user.gender + "'," +
                 "'" + user.profilePicture + "'," +
                 "'" + user.createdAt + "'," +
@@ -101,38 +154,94 @@ public class UserService {
                     ")";
             db.createStatement().executeUpdate(sql);
         }
+        if (user.connections.userId != null) {
+            sql = "INSERT INTO \"connection\" VALUES " +
+                    "(" +
+                    "'" + user.connections.userId + "'," +
+                    "" + user.connections.discordId + "," +
+                    "'" + user.connections.discordTag + "'," +
+                    "'" + user.connections.discordToken + "'," +
+                    "'" + user.connections.riotId + "'," +
+                    "'" + user.connections.battleTag + "'," +
+                    "'" + user.connections.battleToken + "'," +
+                    "'" + user.connections.rocketId + "'" +
+                    ")";
+            db.createStatement().executeUpdate(sql);
+        }
+        if (user.verification.userId != null) {
+            sql = "INSERT INTO \"verification\" VALUES " +
+                    "(" +
+                    "'" + user.verification.userId + "'," +
+                    "'" + user.verification.fileUrl + "'," +
+                    "'" + user.verification.status + "'," +
+                    "'" + Timestamp.valueOf(LocalDateTime.now()) + "'," +
+                    "'" + Timestamp.valueOf(LocalDateTime.now()) + "'" +
+                    ")";
+            db.createStatement().executeUpdate(sql);
+        }
         db.commit();
     }
 
-//    public static void updateUser(User user) throws SQLException {
-//        String sql = "UPDATE \"user\" SET " +
-//                "first_name='" + user.getFirstName() + "'," +
-//                "alt_name='" + user.getAltName() + "'," +
-//                "last_name='" + user.getLastName() + "'," +
-//                "international=" + user.isInternational() + "," +
-//                "email='" + user.getEmail() + "'," +
-//                "phone='" + user.getPhone() + "'," +
-//                "grade=" + user.getGrade() + "," +
-//                "gender='" + user.getGender() + "'," +
-//                "shirt_size='" + user.getShirtSize() + "'," +
-//                "jacket_size='" + user.getJacketSize() + "'," +
-//                "profile_picture='" + user.getProfilePicture() + "'," +
-//                "discord_id='" + user.getDiscordID() + "'," +
-//                "discord_auth_token='" + user.getDiscordAuthToken() + "' " +
-//                "WHERE id='" + user.getId() + "'";
-//        db.createStatement().executeUpdate(sql);
-//        sql = "DELETE FROM \"role\" WHERE user_id='" + user.getId() + "'";
-//        db.createStatement().executeUpdate(sql);
-//        for (String role : user.roles) {
-//            sql = "INSERT INTO role VALUES " +
-//                    "(" +
-//                    "'" + user.getId() + "'," +
-//                    "'" + role + "'" +
-//                    ")";
-//            db.createStatement().executeUpdate(sql);
-//        }
-//        db.commit();
-//    }
+    public static void updateUser(User user) throws SQLException {
+        if (user.id != null) {
+            String sql  = "DELETE FROM \"user\" WHERE id='" + user.id + "';";
+            db.createStatement().executeUpdate(sql);
+            sql = "INSERT INTO \"user\" VALUES " +
+                    "(" +
+                    "'" + user.id + "'," +
+                    "'" + user.firstName + "'," +
+                    "'" + user.lastName + "'," +
+                    "'" + user.email + "'," +
+                    "'" + user.school + "'," +
+                    user.gradYear + "," +
+                    "'" + user.gender + "'," +
+                    "'" + user.profilePicture + "'," +
+                    "'" + user.createdAt + "'," +
+                    "'" + user.updatedAt + "'" +
+                    ")";
+            db.createStatement().executeUpdate(sql);
+            sql  = "DELETE FROM role WHERE role.user_id='" + user.id + "';";
+            db.createStatement().executeUpdate(sql);
+            for (String role : user.roles) {
+                sql = "INSERT INTO \"role\" VALUES " +
+                        "(" +
+                        "'" + user.id + "'," +
+                        "'" + role + "'" +
+                        ")";
+                db.createStatement().executeUpdate(sql);
+            }
+        }
+        if (user.connections.userId != null) {
+            String sql  = "DELETE FROM connection WHERE connection.user_id='" + user.connections.userId + "';";
+            db.createStatement().executeUpdate(sql);
+            sql = "INSERT INTO \"connection\" VALUES " +
+                    "(" +
+                    "'" + user.connections.userId + "'," +
+                    "" + user.connections.discordId + "," +
+                    "'" + user.connections.discordTag + "'," +
+                    "'" + user.connections.discordToken + "'," +
+                    "'" + user.connections.riotId + "'," +
+                    "'" + user.connections.battleTag + "'," +
+                    "'" + user.connections.battleToken + "'," +
+                    "'" + user.connections.rocketId + "'" +
+                    ")";
+            db.createStatement().executeUpdate(sql);
+        }
+        if (user.verification.userId != null) {
+            String sql  = "DELETE FROM verification WHERE verification.user_id='" + user.verification.userId + "';";
+            db.createStatement().executeUpdate(sql);
+            sql = "INSERT INTO \"verification\" VALUES " +
+                    "(" +
+                    "'" + user.verification.userId + "'," +
+                    "'" + user.verification.fileUrl + "'," +
+                    "'" + user.verification.status + "'," +
+                    "'" + user.verification.createdAt + "'," +
+                    "'" + Timestamp.valueOf(LocalDateTime.now()) + "'" +
+                    ")";
+            db.createStatement().executeUpdate(sql);
+        }
+        db.commit();
+    }
 
     public static List<Team> getAllUserTeams(String id) throws SQLException {
         List<Team> returnList = new ArrayList<>();
@@ -140,23 +249,12 @@ public class UserService {
         String sql = "select * from \"user_team\" where user_team.user_id = '" + id + "';";
         ResultSet rs = db.createStatement().executeQuery(sql);
         while (rs.next()) {
-            Team team = new Team();
-            team.id = (rs.getInt("team_id"));
+            Team team = TeamService.getTeam(rs.getInt("team_id"));
             Map map = new HashMap<>();
-            map.put("verified", rs.getBoolean("verified"));
             map.put("createdAt", rs.getTimestamp("created_at"));
-            map.put("updatedAt", rs.getTimestamp("updated_at"));
             map.put("user", getUser(id));
+            team.users.clear();
             team.users.add(map);
-            // Get Roles for User
-            String rolesSql = "select * from \"team\" where team.id='" + team.id + "'";
-            ResultSet rs2 = db.createStatement().executeQuery(rolesSql);
-            while (rs2.next()) {
-                team.name = rs2.getString("name");
-                team.createdAt = rs2.getTimestamp("created_at");
-                team.updatedAt = rs2.getTimestamp("updated_at");
-            }
-            rs2.close();
             returnList.add(team);
         }
         rs.close();
@@ -172,8 +270,6 @@ public class UserService {
                         "(\n" +
                         " '" + uid + "',\n" +
                         "" + tid + ",\n" +
-                        " " + false + ",\n" +
-                        " '" + Timestamp.valueOf(LocalDateTime.now()) + "',\n" +
                         " '" + Timestamp.valueOf(LocalDateTime.now()) + "'\n" +
                         ");";
                 db.createStatement().executeUpdate(sql);
@@ -185,12 +281,6 @@ public class UserService {
 
     public static void removeUserTeam(String uid, Integer tid) throws SQLException {
         String sql = "delete from \"user_team\" where user_team.user_id = '" + uid + "' and user_team.team_id = " + tid + ";";
-        db.createStatement().executeUpdate(sql);
-        db.commit();
-    }
-
-    public static void verifyUserTeam(String uid, Integer tid) throws SQLException {
-        String sql = "update \"user_team\" set verified = true where user_team.user_id = '" + uid + "' and user_team.team_id = " + tid + ";";
         db.createStatement().executeUpdate(sql);
         db.commit();
     }

@@ -35,7 +35,7 @@ public class TeamController {
 
     private void getTeam() {
         get("/teams/:id", (req, res) -> {
-            Team team = TeamService.getTeam(req.params(":id"));
+            Team team = TeamService.getTeam(Integer.parseInt(req.params(":id")));
             if (team.id == null) {
                 res.status(404);
                 res.body("{\"message\": \"Requested team could not be found\"}");
@@ -49,19 +49,24 @@ public class TeamController {
     private void createTeam() {
         post("/teams", (req, res) -> {
             Team team = gson.fromJson(req.body(), Team.class);
+            System.out.println("PARSED TEAM: " + gson.toJson(team));
+            if (team.id != null) {
+                if (TeamService.getTeam(team.id).id == null) {
+                    res.status(404);
+                    res.body("{\"message\": \"Team id provided but no team with id exists\"}");
+                    return res;
+                }
+                else {
+                    team.updatedAt = Timestamp.valueOf(LocalDateTime.now());
+                    TeamService.updateTeam(team);
+                    team = TeamService.getTeam(team.id);
+                    res.status(200);
+                    res.body(gson.toJson(team));
+                    return res;
+                }
+            }
             team.createdAt = Timestamp.valueOf(LocalDateTime.now());
             team.updatedAt = Timestamp.valueOf(LocalDateTime.now());
-            System.out.println("PARSED TEAM: " + gson.toJson(team));
-            if (gson.toJson(team).contains("null")) {
-                res.status(400);
-                res.body("{\"message\": \"Request body missing or contains null values\"}");
-                return res;
-            }
-//            if (TeamService.getTeam(team.id.toString()).id != null) {
-//                res.status(409);
-//                res.body("{\"message\": \"Team already exists with this id\"}");
-//                return res;
-//            }
             team.id = TeamService.addTeam(team);
             res.status(200);
             res.body(gson.toJson(team));

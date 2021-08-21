@@ -15,12 +15,15 @@ public class User {
     public String firstName;
     public String lastName;
     public String email;
-    public boolean emailVerified;
     public String gender;
+    public String school;
+    public Integer gradYear;
     public String profilePicture;
     public Timestamp createdAt;
     public Timestamp updatedAt;
 
     public List<String> roles = new ArrayList<>();
+    public Connection connections = new Connection();
+    public Verification verification = new Verification();
 
 }

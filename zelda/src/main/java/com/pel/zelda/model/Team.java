@@ -14,6 +14,9 @@ public class Team {
 
     public Integer id;
     public String name;
+    public String logoUrl;
+    public String game;
+    public String avgRank;
     public Timestamp createdAt;
     public Timestamp updatedAt;
 

@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.pel.zelda.Application.db;
+
 /**
  * User: bharat
  * Date: 8/10/21
@@ -24,21 +26,22 @@ public class TeamService {
         List<Team> returnList = new ArrayList<>();
         // Get Teams
         String sql = "select * from \"team\";";
-        ResultSet rs = Application.db.createStatement().executeQuery(sql);
+        ResultSet rs = db.createStatement().executeQuery(sql);
         while (rs.next()) {
             Team team = new Team();
             team.id = (rs.getInt("id"));
             team.name = rs.getString("name");
+            team.logoUrl = rs.getString("logo_url");
+            team.game = rs.getString("game");
+            team.avgRank = rs.getString("avg_rank");
             team.createdAt = rs.getTimestamp("created_at");
             team.updatedAt = rs.getTimestamp("updated_at");
             // Get Users for Team
             String usersSql = "select * from \"user_team\" where user_team.team_id = '" + team.id + "';";
-            ResultSet rs2 = Application.db.createStatement().executeQuery(usersSql);
+            ResultSet rs2 = db.createStatement().executeQuery(usersSql);
             while (rs2.next()) {
                 Map map = new HashMap<>();
-                map.put("verified", rs2.getBoolean("verified"));
                 map.put("createdAt", rs2.getTimestamp("created_at"));
-                map.put("updatedAt", rs2.getTimestamp("updated_at"));
                 map.put("user", UserService.getUser(rs2.getString("user_id")));
                 team.users.add(map);
             }
@@ -49,23 +52,24 @@ public class TeamService {
         return returnList;
     }
 
-    public static Team getTeam(String id) throws SQLException {
+    public static Team getTeam(Integer id) throws SQLException {
         Team team = new Team();
         String sql = "select * from \"team\" where team.id = " + id + ";";
-        ResultSet rs = Application.db.createStatement().executeQuery(sql);
+        ResultSet rs = db.createStatement().executeQuery(sql);
         while (rs.next()) {
             team.id = (rs.getInt("id"));
             team.name = rs.getString("name");
+            team.logoUrl = rs.getString("logo_url");
+            team.game = rs.getString("game");
+            team.avgRank = rs.getString("avg_rank");
             team.createdAt = rs.getTimestamp("created_at");
             team.updatedAt = rs.getTimestamp("updated_at");
             // Get Users for Team
             String usersSql = "select * from \"user_team\" where user_team.team_id = '" + team.id + "';";
-            ResultSet rs2 = Application.db.createStatement().executeQuery(usersSql);
+            ResultSet rs2 = db.createStatement().executeQuery(usersSql);
             while (rs2.next()) {
                 Map map = new HashMap<>();
-                map.put("verified", rs2.getBoolean("verified"));
                 map.put("createdAt", rs2.getTimestamp("created_at"));
-                map.put("updatedAt", rs2.getTimestamp("updated_at"));
                 map.put("user", UserService.getUser(rs2.getString("user_id")));
                 team.users.add(map);
             }
@@ -80,16 +84,35 @@ public class TeamService {
                 "(\n" +
                 " default,\n" +
                 " '" + team.name + "',\n" +
+                " '" + team.logoUrl + "',\n" +
+                " '" + team.game + "',\n" +
+                " '" + team.avgRank + "',\n" +
                 " '" + team.createdAt + "',\n" +
                 " '" + team.updatedAt + "'\n" +
                 ") returning id;";
-        ResultSet rs = Application.db.createStatement().executeQuery(sql);
-        Application.db.commit();
+        ResultSet rs = db.createStatement().executeQuery(sql);
+        db.commit();
         while (rs.next()) {
             return rs.getInt("id");
         }
         rs.close();
         return 0;
+    }
+
+    public static void updateTeam(Team team) throws SQLException {
+        String sql  = "DELETE FROM \"team\" WHERE id='" + team.id + "';";
+        db.createStatement().executeUpdate(sql);
+        sql = "insert into \"team\" values\n" +
+                "(\n" +
+                "" + team.id + ",\n" +
+                " '" + team.name + "',\n" +
+                " '" + team.logoUrl + "',\n" +
+                " '" + team.game + "',\n" +
+                " '" + team.avgRank + "',\n" +
+                " '" + team.createdAt + "',\n" +
+                " '" + team.updatedAt + "'\n" +
+                ");";
+        db.createStatement().executeUpdate(sql);
     }
 
 }

@@ -29,7 +29,8 @@ public class MigrationService {
                             "\tfirst_name varchar,\n" +
                             "\tlast_name varchar,\n" +
                             "\temail varchar,\n" +
-                            "\temail_verified bool,\n" +
+                            "\tschool varchar,\n" +
+                            "\tgrad_year int,\n" +
                             "\tgender varchar,\n" +
                             "\tprofile_picture varchar,\n" +
                             "\tcreated_at timestamp,\n" +
@@ -136,6 +137,9 @@ public class MigrationService {
                             "\t\tconstraint teams_pk\n" +
                             "\t\t\tprimary key,\n" +
                             "\tname varchar,\n" +
+                            "\tlogo_url varchar,\n" +
+                            "\tgame varchar,\n" +
+                            "\tavg_rank varchar,\n" +
                             "\tcreated_at timestamp,\n" +
                             "\tupdated_at timestamp\n" +
                             ");";
@@ -160,9 +164,7 @@ public class MigrationService {
                             "(\n" +
                             "\tuser_id varchar,\n" +
                             "\tteam_id int,\n" +
-                            "\tverified boolean,\n" +
-                            "\tcreated_at timestamp,\n" +
-                            "\tupdated_at timestamp\n" +
+                            "\tcreated_at timestamp\n" +
                             ");";
                     db.createStatement().execute(sql);
                     System.out.println("CREATED USER_TEAM TABLE");
