@@ -10,9 +10,9 @@
     <name>zelda</name>
     <description>The user and team management service in the PEL Portal backend.</description>
     <properties>
-        <java.version>1.11</java.version>
-        <maven.compiler.source>1.11</maven.compiler.source>
-        <maven.compiler.target>1.11</maven.compiler.target>
+        <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <dependencies>
