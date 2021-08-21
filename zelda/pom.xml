@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pel</groupId>
-    <artifactId>link</artifactId>
+    <artifactId>zelda</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>link</name>
-    <description>The API Gateway that is used to manage the PEL Portal backend.</description>
+    <name>zelda</name>
+    <description>The user and team management service in the PEL Portal backend.</description>
     <properties>
         <java.version>1.11</java.version>
         <maven.compiler.source>1.11</maven.compiler.source>
@@ -73,7 +73,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.pel.link.Application</mainClass>
+                            <mainClass>com.pel.zelda.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

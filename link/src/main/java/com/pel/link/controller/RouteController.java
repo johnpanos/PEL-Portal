@@ -26,6 +26,11 @@ public class RouteController {
     }
 
     private void getRequest() {
+        // TODO: broken ass endpoint fix plz
+        get("/api/auth/*", (req, res) -> {
+            res.redirect(RouteService.matchRoute(req.url()));
+            return res;
+        });
         get("/api/*", (req, res) -> {
             try {
                 HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();

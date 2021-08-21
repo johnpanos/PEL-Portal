@@ -9,10 +9,6 @@ package com.pel.link;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import com.pel.link.controller.RouteController;
 import com.pel.link.service.AuthService;
 import com.pel.link.service.MigrationService;
@@ -31,7 +27,7 @@ public class Application {
 
     public static Connection db;
 
-    public static void main(String[] args) throws SQLException, IOException, FirebaseMessagingException {
+    public static void main(String[] args) throws SQLException, IOException {
         // Start Spark Webserver
         port(Constants.PORT);
         init();
@@ -51,8 +47,6 @@ public class Application {
                 .build();
 
         FirebaseApp.initializeApp(options);
-
-        FirebaseMessaging.getInstance().send(Message.builder().setTopic("DEV").setNotification(Notification.builder().setTitle("hello world").setBody("Link be online [v" + Constants.VERSION + "]").build()).build());
 
         Constants.tokenList = AuthService.getAllTokens();
         RouteService.getRoutes();
@@ -76,11 +70,11 @@ public class Application {
             System.out.println("REQUESTED ROUTE: " + request.url() + " [" + request.requestMethod() + "]");
             System.out.println("REQUEST BODY: " + request.body());
             System.out.println("REQUEST ORIGIN: " + request.host() + " [" + request.ip() + "]");
-            if (!request.requestMethod().equals("OPTIONS")) {
+            if (!request.requestMethod().equals("OPTIONS") && !request.url().contains("/auth")) {
                 if (request.headers("Authorization") != null) {
                     boolean authenticated;
-                    System.out.println("API KEY: " + request.headers("Authorization"));
-                    String key = request.headers("Authorization");
+                    String key = request.headers("Authorization").replaceAll(" ", "");
+                    System.out.println("API KEY: " + key);
                     authenticated = AuthService.checkToken(key);
                     if (!authenticated) {
                         System.out.println("INVALID AUTHENTICATION!");

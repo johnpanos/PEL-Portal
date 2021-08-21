@@ -7,5 +7,5 @@ git push
 echo "Packaging using Maven"
 mvn -Dmaven.test.skip=true package
 echo "Deploying to BK1031 Server"
-scp ./target/link-1.0-SNAPSHOT-jar-with-dependencies.jar ./link.jar
+scp ./target/zelda-1.0-SNAPSHOT-jar-with-dependencies.jar ./zelda.jar
 echo "Deployment complete"
