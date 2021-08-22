@@ -14,15 +14,13 @@ final pelGrey = Color(0xFF323232);
 const lightTextColor = Colors.black;
 const lightBackgroundColor = Color(0xFFf9f9f9);
 const lightCardColor = Colors.white;
-const lightDividerColor = const Color(0xFFC9C9C9);
+const lightDividerColor = Color(0xFFC9C9C9);
 
 // DARK THEME
-const darkTextColor = Colors.white;
-const darkBackgroundColor = const Color(0xFF212121);
-const darkCardColor = const Color(0xFF2C2C2C);
-// const darkBackgroundColor = const Color(0xFF000000);
-// const darkCardColor = const Color(0xFF1C1C1C);
-const darkDividerColor = const Color(0xFF616161);
+const darkTextColor = Color(0xFFFFFFFF);
+const darkBackgroundColor = Color(0xFF231f20);
+const darkCardColor = Color(0xFF323232);
+const darkDividerColor = Color(0xFF808080);
 
 // CURRENT COLORs
 var currTextColor = lightTextColor;
@@ -34,7 +32,7 @@ ThemeData mainTheme = new ThemeData(
     accentColor: pelGreen,
     primaryColor: pelBlue,
     brightness: Brightness.light,
-    fontFamily: "Sofia Pro",
+    fontFamily: "Ubuntu",
     cardTheme: CardTheme(
       color: currCardColor,
       elevation: 0,

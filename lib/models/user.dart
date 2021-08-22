@@ -1,4 +1,5 @@
 import 'package:pel_portal/models/connections.dart';
+import 'package:pel_portal/models/verification.dart';
 
 class User {
 
@@ -17,6 +18,9 @@ class User {
   List<String> roles = [];
 
   Connections? connections;
+  Verification? verification;
+
+  User();
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -31,6 +35,7 @@ class User {
     updatedAt = DateTime.parse(json['updatedAt']);
     roles = json['roles'];
     connections = Connections.fromJson(json['connections']);
+    verification = Verification.fromJson(json['verification']);
   }
 
   Map<String, dynamic> toJson() => {
@@ -43,7 +48,9 @@ class User {
     'profilePicture': profilePicture,
     'createdAt': createdAt.toString(),
     'updatedAt': updatedAt.toString(),
-    'updatedAt': roles.toString(),
+    'roles': roles,
+    'connections': connections,
+    'verification': verification,
   };
 
 }

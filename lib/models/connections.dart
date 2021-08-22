@@ -9,6 +9,8 @@ class Connections {
   String? battleToken;
   String? rocketId;
 
+  Connections();
+
   Connections.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
     discordId = json['discordId'];
