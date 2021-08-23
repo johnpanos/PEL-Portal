@@ -29,7 +29,7 @@ var currCardColor = lightCardColor;
 var currDividerColor = lightDividerColor;
 
 ThemeData mainTheme = new ThemeData(
-    accentColor: pelGreen,
+    accentColor: pelBlue,
     primaryColor: pelBlue,
     brightness: Brightness.light,
     fontFamily: "Ubuntu",

@@ -1,7 +1,6 @@
 class Connections {
 
   String? userId;
-  String? discordId;
   String? discordTag;
   String? discordToken;
   String? riotId;
@@ -13,7 +12,6 @@ class Connections {
 
   Connections.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
-    discordId = json['discordId'];
     discordTag = json['discordTag'];
     discordToken = json['discordToken'];
     riotId = json['riotId'];
@@ -23,14 +21,13 @@ class Connections {
   }
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'discordId': discordId,
-    'discordTag': discordTag,
-    'discordToken': discordToken,
-    'riotId': riotId,
-    'battleTag': battleTag,
-    'battleToken': battleToken,
-    'rocketId': rocketId
+    'userId': userId ?? "null",
+    'discordTag': discordTag ?? "null",
+    'discordToken': discordToken ?? "null",
+    'riotId': riotId ?? "null",
+    'battleTag': battleTag ?? "null",
+    'battleToken': battleToken ?? "null",
+    'rocketId': rocketId ?? "null"
   };
 
 }

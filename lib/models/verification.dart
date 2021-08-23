@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Verification {
 
   String? userId;
@@ -13,16 +15,16 @@ class Verification {
     userId = json['userId'];
     fileUrl = json['fileUrl'];
     status = json['status'];
-    createdAt = DateTime.parse(json['createdAt']);
-    updatedAt = DateTime.parse(json['updatedAt']);
+    createdAt = DateTime.tryParse(json['createdAt']);
+    updatedAt = DateTime.tryParse(json['updatedAt']);
   }
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'fileUrl': fileUrl,
-    'status': status,
-    'createdAt': createdAt.toString(),
-    'updatedAt': updatedAt.toString(),
+    'userId': userId ?? "null",
+    'fileUrl': fileUrl ?? "null",
+    'status': status ?? "null",
+    'createdAt': createdAt != null ? createdAt! : "null",
+    'updatedAt': updatedAt != null ? updatedAt! : "null",
   };
 
 }

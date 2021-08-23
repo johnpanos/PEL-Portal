@@ -79,7 +79,6 @@ public class MigrationService {
                             "\tuser_id varchar\n" +
                             "\t\tconstraint connection_pk\n" +
                             "\t\t\tprimary key,\n" +
-                            "\tdiscord_id int,\n" +
                             "\tdiscord_tag varchar,\n" +
                             "\tdiscord_token varchar,\n" +
                             "\triot_id varchar,\n" +

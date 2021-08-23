@@ -1,6 +1,7 @@
 package com.pel.zelda.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.pel.zelda.model.User;
 import com.pel.zelda.service.TeamService;
 import com.pel.zelda.service.UserService;
@@ -30,7 +31,7 @@ public class UserController {
 
     private void getAllUsers() {
         get("/users", (req, res) -> {
-            res.body(gson.toJson(UserService.getAllUsers()));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(UserService.getAllUsers()));
             return res;
         });
     }
@@ -43,7 +44,7 @@ public class UserController {
                 res.body("{\"message\": \"Requested user could not be found\"}");
                 return res;
             }
-            res.body(gson.toJson(user));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(user));
             return res;
         });
     }
@@ -51,7 +52,7 @@ public class UserController {
     private void createUser() {
         post("/users", (req, res) -> {
             User user = gson.fromJson(req.body(), User.class);
-            System.out.println("PARSED USER: " + gson.toJson(user));
+            System.out.println("PARSED USER: " + new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(user));
             if (user.id == null && user.connections.userId == null && user.verification.userId == null) {
                 res.status(400);
                 res.body("{\"message\": \"User object missing id\"}");
@@ -64,21 +65,21 @@ public class UserController {
                 UserService.updateUser(user);
                 user = UserService.getUser(userId);
                 res.status(200);
-                res.body(gson.toJson(user));
+                res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(user));
                 return res;
             }
             user.createdAt = Timestamp.valueOf(LocalDateTime.now());
             user.updatedAt = Timestamp.valueOf(LocalDateTime.now());
             UserService.addUser(user);
             res.status(200);
-            res.body(gson.toJson(user));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(user));
             return res;
         });
     }
 
     private void getAllUserTeams() {
         get("/users/:id/teams", (req, res) -> {
-            res.body(gson.toJson(UserService.getAllUserTeams(req.params(":id"))));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(UserService.getAllUserTeams(req.params(":id"))));
             return res;
         });
     }
@@ -96,7 +97,7 @@ public class UserController {
                 return res;
             }
             UserService.addUserTeam(req.params(":uid"), Integer.parseInt(req.params(":tid")));
-            res.body(gson.toJson(UserService.getAllUserTeams(req.params(":uid"))));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(UserService.getAllUserTeams(req.params(":uid"))));
             return res;
         });
     }
@@ -114,7 +115,7 @@ public class UserController {
                 return res;
             }
             UserService.removeUserTeam(req.params(":uid"), Integer.parseInt(req.params(":tid")));
-            res.body(gson.toJson(UserService.getAllUserTeams(req.params(":uid"))));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(UserService.getAllUserTeams(req.params(":uid"))));
             return res;
         });
     }

@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:pel_portal/models/connections.dart';
 import 'package:pel_portal/models/verification.dart';
 
@@ -7,7 +8,7 @@ class User {
   String? firstName;
   String? lastName;
   String? email;
-  String? gender;
+  String? gender = "MALE";
   String? school;
   int? gradYear;
   String? profilePicture;
@@ -17,8 +18,8 @@ class User {
 
   List<String> roles = [];
 
-  Connections? connections;
-  Verification? verification;
+  Connections? connections = new Connections();
+  Verification? verification = new Verification();
 
   User();
 
@@ -31,26 +32,40 @@ class User {
     school = json['school'];
     gradYear = json['gradYear'];
     profilePicture = json['profilePicture'];
-    createdAt = DateTime.parse(json['createdAt']);
-    updatedAt = DateTime.parse(json['updatedAt']);
-    roles = json['roles'];
-    connections = Connections.fromJson(json['connections']);
-    verification = Verification.fromJson(json['verification']);
+    createdAt = DateTime.tryParse(json['createdAt']);
+    updatedAt = DateTime.tryParse(json['updatedAt']);
+    json['roles'].forEach((role) {
+      roles.add(role);
+    });
+    if (json['connections']["userId"] != null) {
+      connections = Connections.fromJson(json['connections']);
+    }
+    if (json['verification']["userId"] != null) {
+      verification = Verification.fromJson(json['verification']);
+    }
   }
 
-  Map<String, dynamic> toJson() => {
-    'firstName': firstName,
-    'lastName': lastName,
-    'email': email,
-    'gender': gender,
-    'school': school,
-    'gradYear': gradYear,
-    'profilePicture': profilePicture,
-    'createdAt': createdAt.toString(),
-    'updatedAt': updatedAt.toString(),
-    'roles': roles,
-    'connections': connections,
-    'verification': verification,
-  };
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {
+      'id': id ?? "null",
+      'firstName': firstName ?? "null",
+      'lastName': lastName ?? "null",
+      'email': email ?? "null",
+      'gender': gender ?? "null",
+      'school': school ?? "null",
+      'gradYear': gradYear ?? "null",
+      'profilePicture': profilePicture ?? "null",
+      'createdAt': createdAt != null ? createdAt! : "null",
+      'updatedAt': updatedAt != null ? updatedAt! : "null",
+      'roles': roles,
+    };
+    if (connections!.userId != null) {
+      json.addAll({'connections': connections});
+    }
+    if (verification!.userId != null) {
+      json.addAll({'verification': verification});
+    }
+    return json;
+  }
 
 }

@@ -6,29 +6,36 @@ import 'package:pel_portal/utils/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  static Future<bool> checkAuth() async {
+  static Future<void> checkAuth() async {
     final prefs = await SharedPreferences.getInstance();
-    String userID = prefs.getString("userID") ?? "";
-    if (userID != "") {
-      var response = await http.get(Uri.parse("$API_HOST/api/users/$userID"));
+    if (prefs.containsKey("userID")) {
+      print("FB User logged");
+      String userID = prefs.getString("userID")!;
+      await AuthService.getAuthToken();
+      var response = await http.get(Uri.parse("$API_HOST/api/users/$userID"), headers: {"Authorization": authToken});
       if (response.statusCode == 200) {
-        currUser = new User.fromJson(jsonDecode(response.body));
+        currUser = new User.fromJson(jsonDecode(response.body)["data"]);
         print("====== USER DEBUG INFO ======");
         print("FIRST NAME: ${currUser.firstName}");
         print("LAST NAME: ${currUser.lastName}");
         print("EMAIL: ${currUser.email}");
         print("====== =============== ======");
-        return true;
       }
       else {
         // logged but not user data found!
+        print("PEL User not found! Logging out FB");
         fb.FirebaseAuth.instance.signOut();
         prefs.remove("userID");
-        return false;
+        currUser = new User();
       }
     }
     else {
-      return false;
+      print("FB User not logged");
     }
+  }
+
+  static Future<void> getAuthToken() async {
+    authToken = await fb.FirebaseAuth.instance.currentUser!.getIdToken(true);
+    // await Future.delayed(const Duration(milliseconds: 100));
   }
 }

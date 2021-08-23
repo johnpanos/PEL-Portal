@@ -44,6 +44,7 @@ public class Application {
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setProjectId("pacific-esports")
+                    .setDatabaseUrl("https://pacific-esports-default-rtdb.firebaseio.com/")
                     .build();
             FirebaseApp.initializeApp(options);
         } catch (NullPointerException err) {
@@ -51,6 +52,7 @@ public class Application {
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setProjectId("pacific-esports")
+                    .setDatabaseUrl("https://pacific-esports-default-rtdb.firebaseio.com/")
                     .build();
             FirebaseApp.initializeApp(options);
         }

@@ -1,6 +1,7 @@
 package com.pel.zelda.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.pel.zelda.model.Team;
 import com.pel.zelda.service.TeamService;
 
@@ -28,7 +29,7 @@ public class TeamController {
 
     private void getAllTeams() {
         get("/teams", (req, res) -> {
-            res.body(gson.toJson(TeamService.getAllTeams()));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(TeamService.getAllTeams()));
             return res;
         });
     }
@@ -41,7 +42,7 @@ public class TeamController {
                 res.body("{\"message\": \"Requested team could not be found\"}");
                 return res;
             }
-            res.body(gson.toJson(team));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(team));
             return res;
         });
     }
@@ -49,7 +50,7 @@ public class TeamController {
     private void createTeam() {
         post("/teams", (req, res) -> {
             Team team = gson.fromJson(req.body(), Team.class);
-            System.out.println("PARSED TEAM: " + gson.toJson(team));
+            System.out.println("PARSED TEAM: " + new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(team));
             if (team.id != null) {
                 if (TeamService.getTeam(team.id).id == null) {
                     res.status(404);
@@ -61,7 +62,7 @@ public class TeamController {
                     TeamService.updateTeam(team);
                     team = TeamService.getTeam(team.id);
                     res.status(200);
-                    res.body(gson.toJson(team));
+                    res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(team));
                     return res;
                 }
             }
@@ -69,7 +70,7 @@ public class TeamController {
             team.updatedAt = Timestamp.valueOf(LocalDateTime.now());
             team.id = TeamService.addTeam(team);
             res.status(200);
-            res.body(gson.toJson(team));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(team));
             return res;
         });
     }

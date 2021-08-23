@@ -3,6 +3,9 @@ import 'package:pel_portal/models/user.dart';
 
 final router = FluroRouter();
 
-const String API_HOST = "http://localhost:6001";
+const String PROXY_HOST = "http://localhost:5000";
+const String API_HOST = "$PROXY_HOST/http://localhost:6001";
+
+String authToken = "token";
 
 User currUser = new User();

@@ -53,7 +53,6 @@ public class UserService {
             ResultSet rs3 = db.createStatement().executeQuery(connectionsSql);
             while (rs3.next()) {
                 user.connections.userId = (rs3.getString("user_id"));
-                user.connections.discordId = (rs3.getInt("discord_id"));
                 user.connections.discordTag = (rs3.getString("discord_tag"));
                 user.connections.discordToken = (rs3.getString("discord_token"));
                 user.connections.riotId = (rs3.getString("riot_id"));
@@ -106,7 +105,6 @@ public class UserService {
             ResultSet rs3 = db.createStatement().executeQuery(connectionsSql);
             while (rs3.next()) {
                 user.connections.userId = (rs3.getString("user_id"));
-                user.connections.discordId = (rs3.getInt("discord_id"));
                 user.connections.discordTag = (rs3.getString("discord_tag"));
                 user.connections.discordToken = (rs3.getString("discord_token"));
                 user.connections.riotId = (rs3.getString("riot_id"));
@@ -158,7 +156,6 @@ public class UserService {
             sql = "INSERT INTO \"connection\" VALUES " +
                     "(" +
                     "'" + user.connections.userId + "'," +
-                    "" + user.connections.discordId + "," +
                     "'" + user.connections.discordTag + "'," +
                     "'" + user.connections.discordToken + "'," +
                     "'" + user.connections.riotId + "'," +
@@ -217,7 +214,6 @@ public class UserService {
             sql = "INSERT INTO \"connection\" VALUES " +
                     "(" +
                     "'" + user.connections.userId + "'," +
-                    "" + user.connections.discordId + "," +
                     "'" + user.connections.discordTag + "'," +
                     "'" + user.connections.discordToken + "'," +
                     "'" + user.connections.riotId + "'," +

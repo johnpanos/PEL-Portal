@@ -1,9 +1,10 @@
 package com.pel.link.service;
 
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.firebase.database.*;
 import com.pel.link.Constants;
 import com.pel.link.model.Token;
 
@@ -22,8 +23,6 @@ import static com.pel.link.Application.db;
  */
 public class AuthService {
 
-    static Firestore dbFirestore = FirestoreClient.getFirestore();
-
     public static List<Token> getAllTokens() throws SQLException {
         List<Token> returnList = new ArrayList<>();
         String sql = "SELECT * FROM \"api_key\"";
@@ -37,22 +36,22 @@ public class AuthService {
         return returnList;
     }
 
-    public static boolean checkToken(String token) throws ExecutionException, InterruptedException {
+    public static boolean checkToken(String token) throws FirebaseAuthException {
         for (int i = 0; i < Constants.tokenList.size(); i++) {
             if (Constants.tokenList.get(i).getId().equals(token)) {
                 return true;
             }
         }
-        ApiFuture<DocumentSnapshot> future = dbFirestore.collection("tokens").document(token).get();
-        DocumentSnapshot document = future.get();
-        if (document.exists()) {
-            revokeToken(token);
+        try {
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
+            System.out.println("DECODED TOKEN USER \"" + decodedToken.getUid() + "\"");
             return true;
+        } catch (FirebaseAuthException error) {
+            return false;
         }
-        return false;
     }
 
     public static void revokeToken(String token) throws ExecutionException, InterruptedException {
-        dbFirestore.collection("tokens").document(token).delete();
+
     }
 }

@@ -46,7 +46,7 @@ router.get('/callback', catchAsync(async (req, res) => {
   console.log(json);
   console.log(json.access_token);
   
-  res.redirect(`${config.web_host}/#/register/connections?token=${json.access_token}`);
+  res.redirect(`${config.web_host}/register/${json.access_token}`);
 }));
 
 function _encode(obj) {

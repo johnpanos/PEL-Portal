@@ -31,13 +31,13 @@ dependencies:
   fluro: ^2.0.3
   firebase_core: ^1.3.0
   firebase_auth: ^2.0.0
-  cloud_firestore: ^2.5.0
   firebase_analytics: ^8.1.2
   url_strategy: ^0.2.0
   cool_alert: ^1.1.0
   extended_image: ^4.1.0
   intl: ^0.17.0
   http: ^0.13.3
+  url_launcher: ^6.0.9
   rounded_loading_button: ^2.0.5
   shared_preferences: ^2.0.6
   progress_indicators: ^1.0.0

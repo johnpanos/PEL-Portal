@@ -8,7 +8,6 @@ package com.pel.zelda.model;
 public class Connection {
 
     public String userId;
-    public Integer discordId;
     public String discordTag;
     public String discordToken;
     public String riotId;
