@@ -55,15 +55,15 @@ class User {
       'school': school ?? "null",
       'gradYear': gradYear ?? "null",
       'profilePicture': profilePicture ?? "null",
-      'createdAt': createdAt != null ? createdAt! : "null",
-      'updatedAt': updatedAt != null ? updatedAt! : "null",
+      'createdAt': createdAt != null ? createdAt.toString() : "null",
+      'updatedAt': updatedAt != null ? updatedAt.toString() : "null",
       'roles': roles,
     };
     if (connections!.userId != null) {
-      json.addAll({'connections': connections});
+      json.addAll({'connections': connections!.toJson()});
     }
     if (verification!.userId != null) {
-      json.addAll({'verification': verification});
+      json.addAll({'verification': verification!.toJson()});
     }
     return json;
   }

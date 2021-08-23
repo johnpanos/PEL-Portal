@@ -18,8 +18,6 @@ import static spark.Spark.*;
  */
 public class UserController {
 
-    Gson gson = new Gson();
-
     public UserController() {
         getAllUsers();
         getUser();
@@ -51,14 +49,14 @@ public class UserController {
 
     private void createUser() {
         post("/users", (req, res) -> {
-            User user = gson.fromJson(req.body(), User.class);
+            User user = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().fromJson(req.body(), User.class);
             System.out.println("PARSED USER: " + new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(user));
             if (user.id == null && user.connections.userId == null && user.verification.userId == null) {
                 res.status(400);
                 res.body("{\"message\": \"User object missing id\"}");
                 return res;
             }
-            // weird ternary cuz system for determine which inner object to update is scuffed
+            // weird ternary cuz system to determine which inner object to update is scuffed but works
             String userId = user.id != null ? user.id : user.connections.userId != null ? user.connections.userId : user.verification.userId;
             if (UserService.getUser(userId).id != null) {
                 user.updatedAt = Timestamp.valueOf(LocalDateTime.now());

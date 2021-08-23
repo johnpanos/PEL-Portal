@@ -18,8 +18,6 @@ import static spark.Spark.post;
  */
 public class TeamController {
 
-    Gson gson = new Gson();
-
     public TeamController() {
         getAllTeams();
         getTeam();
@@ -49,7 +47,7 @@ public class TeamController {
 
     private void createTeam() {
         post("/teams", (req, res) -> {
-            Team team = gson.fromJson(req.body(), Team.class);
+            Team team = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().fromJson(req.body(), Team.class);
             System.out.println("PARSED TEAM: " + new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(team));
             if (team.id != null) {
                 if (TeamService.getTeam(team.id).id == null) {

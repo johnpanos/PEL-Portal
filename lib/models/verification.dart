@@ -23,8 +23,8 @@ class Verification {
     'userId': userId ?? "null",
     'fileUrl': fileUrl ?? "null",
     'status': status ?? "null",
-    'createdAt': createdAt != null ? createdAt! : "null",
-    'updatedAt': updatedAt != null ? updatedAt! : "null",
+    'createdAt': createdAt != null ? createdAt.toString() : "null",
+    'updatedAt': updatedAt != null ? updatedAt.toString() : "null",
   };
 
 }

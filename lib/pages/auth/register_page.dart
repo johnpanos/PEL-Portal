@@ -12,6 +12,7 @@ import 'package:pel_portal/utils/config.dart';
 import 'package:pel_portal/utils/theme.dart';
 import 'package:http/http.dart' as http;
 import 'package:progress_indicators/progress_indicators.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterPage extends StatefulWidget {
   String token;
@@ -30,13 +31,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void getDiscordInfo() {
     http.get(Uri.parse("https://discord.com/api/oauth2/@me"), headers: {"Authorization": "Bearer $token"}).then((value) {
-      setState(() {
-        currUser.connections!.userId = jsonDecode(value.body)["user"]["id"];
-        currUser.connections!.discordTag = "${jsonDecode(value.body)["user"]["username"]}#${jsonDecode(value.body)["user"]["discriminator"]}";
-        currUser.connections!.discordToken = token;
-        currUser.profilePicture = "https://cdn.discordapp.com/avatars/${currUser.connections!.userId}/${jsonDecode(value.body)["user"]["avatar"]}.webp";
-      });
-      getAuthState();
+      print(value.body);
+      if (value.statusCode == 200) {
+        setState(() {
+          currUser.connections!.userId = jsonDecode(value.body)["user"]["id"];
+          currUser.connections!.discordTag = "${jsonDecode(value.body)["user"]["username"]}#${jsonDecode(value.body)["user"]["discriminator"]}";
+          currUser.connections!.discordToken = token;
+          currUser.profilePicture = "https://cdn.discordapp.com/avatars/${currUser.connections!.userId}/${jsonDecode(value.body)["user"]["avatar"]}.webp";
+        });
+        getAuthState();
+      }
+      else {
+        router.navigateTo(context, "/", transition: TransitionType.fadeIn, replace: true);
+      }
     });
   }
 
@@ -80,7 +87,9 @@ class _RegisterPageState extends State<RegisterPage> {
       creatingAccount = true;
     });
     try {
-      if (currUser.firstName!.isNotEmpty && currUser.lastName!.isNotEmpty && currUser.email!.isNotEmpty && currUser.school!.isNotEmpty && currUser.school!.isNotEmpty && currUser.gradYear != null) {
+      if (currUser.firstName!.isNotEmpty && currUser.lastName!.isNotEmpty && currUser.email!.isNotEmpty && currUser.school!.isNotEmpty && currUser.school!.isNotEmpty && currUser.gradYear != null && currUser.roles.isNotEmpty) {
+        var userJson = jsonEncode(currUser);
+        print(userJson);
         await AuthService.getAuthToken().then((_) async {
           await http.post(Uri.parse("$API_HOST/api/users"), body: jsonEncode(currUser), headers: {"Authorization": authToken}).then((value) {
             print(value.body);
@@ -126,6 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       }
     } catch (e) {
+      print(e);
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,

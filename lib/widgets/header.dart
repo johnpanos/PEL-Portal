@@ -21,9 +21,28 @@ class _HeaderState extends State<Header> {
 
   SharedPreferences? prefs;
 
+  bool authenticated = false;
+
   @override
   void initState() {
     super.initState();
+    getAuthState();
+  }
+
+  void getAuthState() {
+    fb.FirebaseAuth.instance.authStateChanges().listen((user) async {
+      if (user != null) {
+       setState(() {
+         authenticated = true;
+       });
+      }
+      else {
+        // not logged
+        setState(() {
+          authenticated = false;
+        });
+      }
+    });
   }
 
   @override
@@ -50,20 +69,19 @@ class _HeaderState extends State<Header> {
             child: Row(
               children: [
                 Visibility(
-                  visible: currUser.id != null,
+                  visible: authenticated,
                   child: CupertinoButton(
                     child: Text("Logout"),
                     color: pelRed,
                     onPressed: () async {
-                      await AuthService.getAuthToken().then((value) async {
-                        var response = await http.get(Uri.parse("$API_HOST/api/users"), headers: {"Authorization": authToken});
-                        print(response.body);
+                      await AuthService.signOut().then((_) async {
+                        router.navigateTo(context, "/", transition: TransitionType.fadeIn, replace: true);
                       });
                     },
                   ),
                 ),
                 Visibility(
-                  visible: currUser.id == null,
+                  visible: !authenticated,
                   child: CupertinoButton(
                     child: Text("Login"),
                     color: pelBlue,
