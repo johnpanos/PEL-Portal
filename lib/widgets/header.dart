@@ -71,7 +71,7 @@ class _HeaderState extends State<Header> {
                 Visibility(
                   visible: authenticated,
                   child: CupertinoButton(
-                    child: Text("Logout"),
+                    child: Text("Logout", style: TextStyle(fontFamily: "Ubuntu")),
                     color: pelRed,
                     onPressed: () async {
                       await AuthService.signOut().then((_) async {
@@ -83,7 +83,7 @@ class _HeaderState extends State<Header> {
                 Visibility(
                   visible: !authenticated,
                   child: CupertinoButton(
-                    child: Text("Login"),
+                    child: Text("Login", style: TextStyle(fontFamily: "Ubuntu"),),
                     color: pelBlue,
                     onPressed: () {
                       launch("${API_HOST.split(PROXY_HOST + "/")[1]}/api/auth/discord/login", webOnlyWindowName: "_self");
