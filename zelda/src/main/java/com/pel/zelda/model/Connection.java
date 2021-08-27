@@ -10,9 +10,12 @@ public class Connection {
     public String userId;
     public String discordTag;
     public String discordToken;
-    public String riotId;
+    public String valorantId;
+    public String leagueId;
     public String battleTag;
     public String battleToken;
+    public String steamId;
+    public String steamToken;
     public String rocketId;
 
 }

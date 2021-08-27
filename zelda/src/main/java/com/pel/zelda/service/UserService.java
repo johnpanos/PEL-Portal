@@ -55,9 +55,12 @@ public class UserService {
                 user.connections.userId = (rs3.getString("user_id"));
                 user.connections.discordTag = (rs3.getString("discord_tag"));
                 user.connections.discordToken = (rs3.getString("discord_token"));
-                user.connections.riotId = (rs3.getString("riot_id"));
+                user.connections.valorantId = (rs3.getString("valorant_id"));
+                user.connections.leagueId = (rs3.getString("league_id"));
                 user.connections.battleTag = (rs3.getString("battle_tag"));
                 user.connections.battleToken = (rs3.getString("battle_token"));
+                user.connections.steamId = (rs3.getString("steam_id"));
+                user.connections.steamToken = (rs3.getString("steam_token"));
                 user.connections.rocketId = (rs3.getString("rocket_id"));
             }
             rs3.close();
@@ -107,9 +110,12 @@ public class UserService {
                 user.connections.userId = (rs3.getString("user_id"));
                 user.connections.discordTag = (rs3.getString("discord_tag"));
                 user.connections.discordToken = (rs3.getString("discord_token"));
-                user.connections.riotId = (rs3.getString("riot_id"));
+                user.connections.valorantId = (rs3.getString("valorant_id"));
+                user.connections.leagueId = (rs3.getString("league_id"));
                 user.connections.battleTag = (rs3.getString("battle_tag"));
                 user.connections.battleToken = (rs3.getString("battle_token"));
+                user.connections.steamId = (rs3.getString("steam_id"));
+                user.connections.steamToken = (rs3.getString("steam_token"));
                 user.connections.rocketId = (rs3.getString("rocket_id"));
             }
             rs3.close();
@@ -158,9 +164,12 @@ public class UserService {
                     "'" + user.connections.userId + "'," +
                     "'" + user.connections.discordTag + "'," +
                     "'" + user.connections.discordToken + "'," +
-                    "'" + user.connections.riotId + "'," +
+                    "'" + user.connections.valorantId + "'," +
+                    "'" + user.connections.leagueId + "'," +
                     "'" + user.connections.battleTag + "'," +
                     "'" + user.connections.battleToken + "'," +
+                    "'" + user.connections.steamId + "'," +
+                    "'" + user.connections.steamToken + "'," +
                     "'" + user.connections.rocketId + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
@@ -216,9 +225,12 @@ public class UserService {
                     "'" + user.connections.userId + "'," +
                     "'" + user.connections.discordTag + "'," +
                     "'" + user.connections.discordToken + "'," +
-                    "'" + user.connections.riotId + "'," +
+                    "'" + user.connections.valorantId + "'," +
+                    "'" + user.connections.leagueId + "'," +
                     "'" + user.connections.battleTag + "'," +
                     "'" + user.connections.battleToken + "'," +
+                    "'" + user.connections.steamId + "'," +
+                    "'" + user.connections.steamToken + "'," +
                     "'" + user.connections.rocketId + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);

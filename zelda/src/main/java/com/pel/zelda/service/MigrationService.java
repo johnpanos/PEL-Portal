@@ -81,9 +81,12 @@ public class MigrationService {
                             "\t\t\tprimary key,\n" +
                             "\tdiscord_tag varchar,\n" +
                             "\tdiscord_token varchar,\n" +
-                            "\triot_id varchar,\n" +
+                            "\tvalorant_id varchar,\n" +
+                            "\tleague_id varchar,\n" +
                             "\tbattle_tag varchar,\n" +
                             "\tbattle_token varchar,\n" +
+                            "\tsteam_id varchar,\n" +
+                            "\tsteam_token varchar,\n" +
                             "\trocket_id varchar\n" +
                             ");";
                     db.createStatement().execute(sql);

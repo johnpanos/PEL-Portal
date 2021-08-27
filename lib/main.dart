@@ -3,9 +3,12 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:pel_portal/pages/admin/manage_users_page.dart';
+import 'package:pel_portal/pages/admin/manage_verification_page.dart';
 import 'package:pel_portal/pages/auth/register_page.dart';
 import 'package:pel_portal/pages/home_page.dart';
 import 'package:pel_portal/pages/not_found_page.dart';
+import 'package:pel_portal/pages/profile/profile_page.dart';
 import 'package:pel_portal/utils/config.dart';
 import 'package:pel_portal/utils/theme.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -31,6 +34,19 @@ Future<void> main() async {
 
   router.define('/register/:token', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
     return new RegisterPage(params!["token"][0]);
+  }));
+
+  // ADMIN ROUTES
+  router.define('/admin/users', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
+    return new ManageUsersPage();
+  }));
+  router.define('/admin/verification', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
+    return new ManageVerificationPage();
+  }));
+
+  // PROFILE ROUTES
+  router.define('/profile', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
+    return new ProfilePage();
   }));
 
   router.notFoundHandler = Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
