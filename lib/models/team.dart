@@ -1,8 +1,10 @@
+import 'package:pel_portal/utils/config.dart';
+
 class Team {
   int? id;
   String? name;
-  String? logoUrl;
-  String? game;
+  String? logoUrl = "https://pacificesports.org/wp-content/uploads/placeholder.png";
+  String? game = "VALORANT";
   String? avgRank;
 
   DateTime? createdAt;
@@ -21,7 +23,7 @@ class Team {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id ?? "null",
+    'id': id,
     'name': name ?? "null",
     'logoUrl': logoUrl ?? "null",
     'game': game ?? "null",
