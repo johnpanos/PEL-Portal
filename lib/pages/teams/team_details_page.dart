@@ -60,6 +60,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
           setState(() {
             team = new Team.fromJson(teamJson);
           });
+          userList.clear();
           for (int i = 0; i < teamJson["users"].length; i++) {
             setState(() {
               userList.add(new User.fromJson(teamJson["users"][i]["user"]));
@@ -81,7 +82,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
     });
   }
 
-  updateTeam() async {
+  void updateTeam() async {
     await AuthService.getAuthToken().then((_) async {
       await http.post(Uri.parse("$API_HOST/api/teams"), body: jsonEncode(team), headers: {"Authorization": authToken}).then((value) {
         if (value.statusCode == 200) {
@@ -95,6 +96,27 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
               userList.add(new User.fromJson(teamJson["users"][i]["user"]));
             });
           }
+        }
+        else {
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              borderRadius: 8,
+              width: 300,
+              confirmBtnColor: pelRed,
+              title: "Error!",
+              text: jsonDecode(value.body)["data"]["message"]
+          );
+        }
+      });
+    });
+  }
+
+  Future<void> removeMember(User user) async {
+    await AuthService.getAuthToken().then((_) async {
+      await http.delete(Uri.parse("$API_HOST/api/users/${user.id}/teams/${team.id}"), headers: {"Authorization": authToken}).then((value) {
+        if (value.statusCode == 200) {
+          getTeam();
         }
         else {
           CoolAlert.show(
@@ -269,7 +291,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                   ),
                                                   Padding(padding: EdgeInsets.all(16)),
                                                   Visibility(
-                                                    visible: currUser.roles.contains("${team.id}-CAPTAIN"),
+                                                    visible: user.roles.contains("${team.id}-CAPTAIN"),
                                                     child: Card(
                                                       color: pelGreen,
                                                       child: Container(
@@ -277,6 +299,27 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                         child: Text("Team Captain", style: TextStyle(color: Colors.white, fontSize: 16),),
                                                       ),
                                                     ),
+                                                  ),
+                                                  Visibility(
+                                                    visible: currUser.roles.contains("${team.id}-CAPTAIN") && user.id != currUser.id,
+                                                    child: CupertinoButton(
+                                                      child: Text("Remove", style: TextStyle(color: pelRed, fontFamily: "Ubuntu"),),
+                                                      onPressed: () {
+                                                        CoolAlert.show(
+                                                            context: context,
+                                                            type: CoolAlertType.confirm,
+                                                            borderRadius: 8,
+                                                            onConfirmBtnTap: () {
+                                                              removeMember(user);
+                                                              router.pop(context);
+                                                            },
+                                                            width: 300,
+                                                            confirmBtnColor: pelBlue,
+                                                            title: "Are you sure?",
+                                                            text: "Are you sure you want to remove this team member?"
+                                                        );
+                                                      },
+                                                    )
                                                   )
                                                 ],
                                               ),
