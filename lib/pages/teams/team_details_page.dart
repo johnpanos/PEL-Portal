@@ -156,7 +156,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-      if (currUser.id != null && currUser.verification!.status == "VERIFIED") {
+      if (currUser.id != null && currUser.verification!.status == "VERIFIED" && team.id != null) {
         if (MediaQuery.of(context).size.width > 800) {
           return Scaffold(
             backgroundColor: currBackgroundColor,
@@ -196,6 +196,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                         width: 100,
                                         height: 100,
                                       ),
+                                      Padding(padding: EdgeInsets.all(8),),
                                       Text(
                                         "${team.name}",
                                         style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
