@@ -164,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                           child: new Text("Welcome back, ${currUser.firstName}.", style: TextStyle(fontFamily: "LEMONMILK", color: currTextColor, fontSize: 35, fontWeight: FontWeight.bold), textAlign: TextAlign.start,),
                         ),
                         new Visibility(
-                          visible: currUser.verification!.status == null,
+                          visible: currUser.verification!.status == null || currUser.verification!.status == "null",
                           child: new Container(
                             width: (MediaQuery.of(context).size.width > 1300) ? 1100 : MediaQuery.of(context).size.width - 50,
                             padding: new EdgeInsets.only(left: 16, right: 16, top: 16),

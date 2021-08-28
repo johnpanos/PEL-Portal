@@ -38,7 +38,9 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
       if (user != null) {
         AuthService.getUser(user.uid).then((_) {
           setState(() {});
-          getUsers();
+          if (currUser.roles.contains("ADMIN")) {
+            getUsers();
+          }
         });
       }
       else {
