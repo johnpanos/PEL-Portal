@@ -5,7 +5,7 @@ class Team {
   String? name;
   String? logoUrl = "https://pacificesports.org/wp-content/uploads/placeholder.png";
   String? game = "VALORANT";
-  String? avgRank;
+  String? avgRank = "Select Avg Rank";
 
   DateTime? createdAt;
   DateTime? updatedAt;

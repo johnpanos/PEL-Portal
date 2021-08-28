@@ -113,6 +113,7 @@ public class TeamService {
                 " '" + team.updatedAt + "'\n" +
                 ");";
         db.createStatement().executeUpdate(sql);
+        db.commit();
     }
 
 }

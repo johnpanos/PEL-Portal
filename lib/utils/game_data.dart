@@ -7,3 +7,19 @@ List<String> games = [
   "Splitgate"
 ];
 
+Map<String, List<String>> gameRanks = {
+  "VALORANT": [
+    "Select Avg Rank",
+    "Iron",
+    "Bronze",
+    "Silver",
+    "Gold",
+    "Platinum",
+    "Diamond",
+    "Immortal",
+    "Radiant"
+  ],
+  "League of Legends": [
+
+  ]
+};
