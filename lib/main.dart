@@ -9,6 +9,7 @@ import 'package:pel_portal/pages/auth/register_page.dart';
 import 'package:pel_portal/pages/home_page.dart';
 import 'package:pel_portal/pages/not_found_page.dart';
 import 'package:pel_portal/pages/profile/profile_page.dart';
+import 'package:pel_portal/pages/teams/teams_page.dart';
 import 'package:pel_portal/utils/config.dart';
 import 'package:pel_portal/utils/theme.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -47,6 +48,11 @@ Future<void> main() async {
   // PROFILE ROUTES
   router.define('/profile', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
     return new ProfilePage();
+  }));
+
+  // TEAMS ROUTES
+  router.define('/teams', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
+    return new TeamsPage();
   }));
 
   router.notFoundHandler = Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {

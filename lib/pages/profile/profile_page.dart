@@ -5,13 +5,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pel_portal/models/user.dart';
-import 'package:pel_portal/pages/onboarding_page.dart';
 import 'package:pel_portal/utils/auth_service.dart';
 import 'package:pel_portal/utils/config.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:pel_portal/utils/theme.dart';
 import 'package:pel_portal/widgets/header.dart';
+import 'package:pel_portal/widgets/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
@@ -601,7 +600,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     }
     else {
-      return OnboardingPage();
+      return LoadingPage();
     }
   }
 }

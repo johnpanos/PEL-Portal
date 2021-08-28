@@ -40,6 +40,8 @@ dependencies:
   http: ^0.13.3
   url_launcher: ^6.0.9
   rounded_loading_button: ^2.0.5
+  flutter_markdown: ^0.6.5
+  markdown_editable_textinput: ^2.0.1
   file_picker: ^4.0.0
   shared_preferences: ^2.0.6
   progress_indicators: ^1.0.0
