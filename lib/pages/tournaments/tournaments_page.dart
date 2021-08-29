@@ -313,7 +313,6 @@ class _TournamentsPageState extends State<TournamentsPage> {
                                         (String value) => setState(() => newTournament.desc = value),
                                         "",
                                         label: 'Description\n\nHint: This field supports Markdown!',
-                                        maxLines: 10,
                                         actions: MarkdownType.values,
                                       ),
                                       Padding(padding: EdgeInsets.all(16),),
@@ -794,13 +793,589 @@ class _TournamentsPageState extends State<TournamentsPage> {
       }
       else {
         return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Image.asset("images/logos/abbrev/abbrev-mono.png", height: 40,),
+                Text(
+                  "PORTAL",
+                  style: TextStyle(fontFamily: "Karla", fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ],
+            ),
+            centerTitle: true,
+          ),
           backgroundColor: currBackgroundColor,
-          body: Column(
-            children: [
-              Container(
-                child: Center(child: Text("home page"),),
-              )
-            ],
+          floatingActionButton: Visibility(
+            visible: !creating,
+            child: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  creating = true;
+                });
+              },
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    new AnimatedContainer(
+                      duration: const Duration(milliseconds: 100),
+                      height: creating ? null : 0,
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Visibility(
+                        visible: creating && currUser.roles.contains("ADMIN"),
+                        child: Card(
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Create Tournament",
+                                  style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                                ),
+                                Padding(padding: EdgeInsets.all(8),),
+                                Image.asset(
+                                  getGameImage(newTournament),
+                                  width: 100,
+                                  height: 100,
+                                ),
+                                Padding(padding: EdgeInsets.all(8),),
+                                Row(
+                                  children: [
+                                    new Expanded(
+                                      flex: 2,
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                            hintText: "Tournament Name",
+                                            border: OutlineInputBorder()
+                                        ),
+                                        onChanged: (input) {
+                                          newTournament.name = input;
+                                        },
+                                      ),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(8),),
+                                    new Expanded(
+                                      flex: 1,
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                            hintText: "Division",
+                                            border: OutlineInputBorder()
+                                        ),
+                                        onChanged: (input) {
+                                          newTournament.division = input;
+                                        },
+                                      ),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(8),),
+                                    Text("Game:", style: TextStyle(color: currTextColor, fontSize: 16),),
+                                    Padding(padding: EdgeInsets.all(8),),
+                                    new Expanded(
+                                      flex: 1,
+                                      child: new DropdownButton(
+                                        value: newTournament.game,
+                                        items: games.map((e) => DropdownMenuItem(
+                                          child: Text(e),
+                                          value: e,
+                                        )).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            newTournament.game = value.toString();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(8),),
+                                  ],
+                                ),
+                                Padding(padding: EdgeInsets.all(8),),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CupertinoButton(
+                                        child: Text("High School", style: TextStyle(fontFamily: "Ubuntu", color: newTournament.type == "HIGH_SCHOOL" ? Colors.white : currTextColor),),
+                                        color: newTournament.type == "HIGH_SCHOOL" ? pelBlue : currCardColor,
+                                        onPressed: () {
+                                          setState(() {
+                                            newTournament.type = "HIGH_SCHOOL";
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: CupertinoButton(
+                                        child: Text("College", style: TextStyle(fontFamily: "Ubuntu", color: newTournament.type == "COLLEGE" ? Colors.white : currTextColor),),
+                                        color: newTournament.type == "COLLEGE" ? pelBlue : currCardColor,
+                                        onPressed: () {
+                                          setState(() {
+                                            newTournament.type = "COLLEGE";
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: CupertinoButton(
+                                        child: Text("College/HS", style: TextStyle(fontFamily: "Ubuntu", color: newTournament.type == "BOTH" ? Colors.white : currTextColor),),
+                                        color: newTournament.type == "BOTH" ? pelBlue : currCardColor,
+                                        onPressed: () {
+                                          setState(() {
+                                            newTournament.type = "BOTH";
+                                          });
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Padding(padding: EdgeInsets.all(8),),
+                                MarkdownTextInput(
+                                      (String value) => setState(() => newTournament.desc = value),
+                                  "",
+                                  label: 'Description\n\nHint: This field supports Markdown!',
+                                  actions: MarkdownType.values,
+                                ),
+                                Padding(padding: EdgeInsets.all(16),),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.only(right: 8),
+                                                child: new Text(
+                                                  "Registration Opens: ",
+                                                  style: TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                              new Expanded(
+                                                child: DateTimeField(
+                                                  decoration: InputDecoration(
+                                                      border: OutlineInputBorder()
+                                                  ),
+                                                  format: DateFormat("yyyy-MM-dd HH:mm"),
+                                                  onChanged: (date) {
+                                                    print("Set start $date");
+                                                    newTournament.registrationStart = date;
+                                                  },
+                                                  onShowPicker: (context, currentValue) async {
+                                                    final date = await showDatePicker(
+                                                        context: context,
+                                                        firstDate: DateTime(1900),
+                                                        initialDate:
+                                                        currentValue ?? DateTime.now(),
+                                                        lastDate: DateTime(2100));
+                                                    if (date != null) {
+                                                      final time = await showTimePicker(
+                                                        initialEntryMode:
+                                                        TimePickerEntryMode.input,
+                                                        context: context,
+                                                        initialTime: TimeOfDay.fromDateTime(
+                                                            currentValue ?? DateTime.now()),
+                                                      );
+                                                      return DateTimeField.combine(date, time);
+                                                    } else {
+                                                      return currentValue;
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(padding: EdgeInsets.all(4),),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.only(right: 8),
+                                                child: new Text(
+                                                  "Registration Closes: ",
+                                                  style: TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                              new Expanded(
+                                                child: DateTimeField(
+                                                  decoration: InputDecoration(
+                                                      border: OutlineInputBorder()
+                                                  ),
+                                                  format: DateFormat("yyyy-MM-dd HH:mm"),
+                                                  onChanged: (date) {
+                                                    print("Set start $date");
+                                                    newTournament.registrationEnd = date;
+                                                  },
+                                                  onShowPicker: (context, currentValue) async {
+                                                    final date = await showDatePicker(
+                                                        context: context,
+                                                        firstDate: DateTime(1900),
+                                                        initialDate:
+                                                        currentValue ?? DateTime.now(),
+                                                        lastDate: DateTime(2100));
+                                                    if (date != null) {
+                                                      final time = await showTimePicker(
+                                                        initialEntryMode:
+                                                        TimePickerEntryMode.input,
+                                                        context: context,
+                                                        initialTime: TimeOfDay.fromDateTime(
+                                                            currentValue ?? DateTime.now()),
+                                                      );
+                                                      return DateTimeField.combine(date, time);
+                                                    } else {
+                                                      return currentValue;
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(8),),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.only(right: 8),
+                                                child: new Text(
+                                                  "Season Starts: ",
+                                                  style: TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                              new Expanded(
+                                                child: DateTimeField(
+                                                  decoration: InputDecoration(
+                                                      border: OutlineInputBorder()
+                                                  ),
+                                                  format: DateFormat("yyyy-MM-dd HH:mm"),
+                                                  onChanged: (date) {
+                                                    print("Set start $date");
+                                                    newTournament.seasonStart = date;
+                                                  },
+                                                  onShowPicker: (context, currentValue) async {
+                                                    final date = await showDatePicker(
+                                                        context: context,
+                                                        firstDate: DateTime(1900),
+                                                        initialDate:
+                                                        currentValue ?? DateTime.now(),
+                                                        lastDate: DateTime(2100));
+                                                    if (date != null) {
+                                                      final time = await showTimePicker(
+                                                        initialEntryMode:
+                                                        TimePickerEntryMode.input,
+                                                        context: context,
+                                                        initialTime: TimeOfDay.fromDateTime(
+                                                            currentValue ?? DateTime.now()),
+                                                      );
+                                                      return DateTimeField.combine(date, time);
+                                                    } else {
+                                                      return currentValue;
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(padding: EdgeInsets.all(4),),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.only(right: 8),
+                                                child: new Text(
+                                                  "Playoffs Start: ",
+                                                  style: TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                              new Expanded(
+                                                child: DateTimeField(
+                                                  decoration: InputDecoration(
+                                                      border: OutlineInputBorder()
+                                                  ),
+                                                  format: DateFormat("yyyy-MM-dd HH:mm"),
+                                                  onChanged: (date) {
+                                                    print("Set start $date");
+                                                    newTournament.playoffStart = date;
+                                                  },
+                                                  onShowPicker: (context, currentValue) async {
+                                                    final date = await showDatePicker(
+                                                        context: context,
+                                                        firstDate: DateTime(1900),
+                                                        initialDate:
+                                                        currentValue ?? DateTime.now(),
+                                                        lastDate: DateTime(2100));
+                                                    if (date != null) {
+                                                      final time = await showTimePicker(
+                                                        initialEntryMode:
+                                                        TimePickerEntryMode.input,
+                                                        context: context,
+                                                        initialTime: TimeOfDay.fromDateTime(
+                                                            currentValue ?? DateTime.now()),
+                                                      );
+                                                      return DateTimeField.combine(date, time);
+                                                    } else {
+                                                      return currentValue;
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(padding: EdgeInsets.all(4),),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.only(right: 8),
+                                                child: new Text(
+                                                  "Season Ends:    ",
+                                                  style: TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                              new Expanded(
+                                                child: DateTimeField(
+                                                  decoration: InputDecoration(
+                                                      border: OutlineInputBorder()
+                                                  ),
+                                                  format: DateFormat("yyyy-MM-dd HH:mm"),
+                                                  onChanged: (date) {
+                                                    print("Set start $date");
+                                                    newTournament.seasonEnd = date;
+                                                  },
+                                                  onShowPicker: (context, currentValue) async {
+                                                    final date = await showDatePicker(
+                                                        context: context,
+                                                        firstDate: DateTime(1900),
+                                                        initialDate:
+                                                        currentValue ?? DateTime.now(),
+                                                        lastDate: DateTime(2100));
+                                                    if (date != null) {
+                                                      final time = await showTimePicker(
+                                                        initialEntryMode:
+                                                        TimePickerEntryMode.input,
+                                                        context: context,
+                                                        initialTime: TimeOfDay.fromDateTime(
+                                                            currentValue ?? DateTime.now()),
+                                                      );
+                                                      return DateTimeField.combine(date, time);
+                                                    } else {
+                                                      return currentValue;
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(padding: EdgeInsets.all(8),),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CupertinoButton(
+                                        color: pelRed,
+                                        padding: EdgeInsets.zero,
+                                        child: Text("Cancel", style: TextStyle(fontFamily: "Ubuntu"),),
+                                        onPressed: () {
+                                          setState(() {
+                                            creating = false;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(4)),
+                                    Expanded(
+                                      child: loading ? Container(
+                                        padding: EdgeInsets.all(32),
+                                        child: HeartbeatProgressIndicator(
+                                          child: Image.asset("images/logos/icon/mark-color.png", height: 50,),
+                                        ),
+                                      ) : CupertinoButton(
+                                        color: pelBlue,
+                                        padding: EdgeInsets.zero,
+                                        child: Text("Create", style: TextStyle(fontFamily: "Ubuntu")),
+                                        onPressed: () {
+                                          createTournament();
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    new Container(
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Card(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Tournaments",
+                                style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Column(
+                                children: tournamentList.map((tournament) => Container(
+                                  child: Card(
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                      onTap: () {
+                                        router.navigateTo(context, "/tournaments/${tournament.id}", transition: TransitionType.native);
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Row(
+                                          children: [
+                                            Image.asset(
+                                              getGameImage(tournament),
+                                              height: 65,
+                                              width: 65,
+                                            ),
+                                            Padding(padding: EdgeInsets.all(8)),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Container(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "${tournament.name!}  •  Div ${tournament.division}",
+                                                      style: TextStyle(color: currTextColor, fontSize: 20),
+                                                    ),
+                                                    Padding(padding: EdgeInsets.all(2)),
+                                                    Text(
+                                                      "${DateFormat("yMMMd").format(tournament.seasonStart!)} – ${DateFormat("yMMMd").format(tournament.seasonEnd!)}",
+                                                      style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                    ),
+                                                    Padding(padding: EdgeInsets.all(2)),
+                                                    Card(
+                                                      color: pelBlue,
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(8),
+                                                        child: Text(
+                                                          "${tournament.type! == "HIGH_SCHOOL" ? "High School" : tournament.type! == "COLLEGE" ? "College" : "College/HS"}",
+                                                          style: TextStyle(color: Colors.white, fontSize: 16),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(padding: EdgeInsets.all(8)),
+                                            Container(
+                                                child: Icon(Icons.arrow_forward_ios, color: currDividerColor,)
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )).toList(),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    new Container(
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Card(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Past Tournaments",
+                                style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Column(
+                                children: pastTournaments.map((tournament) => Container(
+                                  child: Card(
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                      onTap: () {
+                                        router.navigateTo(context, "/tournaments/${tournament.id}", transition: TransitionType.native);
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Row(
+                                          children: [
+                                            Image.asset(
+                                              getGameImage(tournament),
+                                              height: 65,
+                                              width: 65,
+                                            ),
+                                            Padding(padding: EdgeInsets.all(8)),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Container(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "${tournament.name!}  •  Div ${tournament.division}",
+                                                      style: TextStyle(color: currTextColor, fontSize: 20),
+                                                    ),
+                                                    Padding(padding: EdgeInsets.all(2)),
+                                                    Text(
+                                                      "${DateFormat("yMMMd").format(tournament.seasonStart!)} – ${DateFormat("yMMMd").format(tournament.seasonEnd!)}",
+                                                      style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                    ),
+                                                    Padding(padding: EdgeInsets.all(2)),
+                                                    Card(
+                                                      color: pelBlue,
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(8),
+                                                        child: Text(
+                                                          "${tournament.type! == "HIGH_SCHOOL" ? "High School" : tournament.type! == "COLLEGE" ? "College" : "College/HS"}",
+                                                          style: TextStyle(color: Colors.white, fontSize: 16),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(padding: EdgeInsets.all(8)),
+                                            Container(
+                                                child: Icon(Icons.arrow_forward_ios, color: currDividerColor,)
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )).toList(),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(16),),
+                  ],
+                )
+            ),
           ),
         );
       }

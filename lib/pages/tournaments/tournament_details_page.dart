@@ -702,13 +702,399 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
       }
       else {
         return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Image.asset("images/logos/abbrev/abbrev-mono.png", height: 40,),
+                Text(
+                  "PORTAL",
+                  style: TextStyle(fontFamily: "Karla", fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ],
+            ),
+            centerTitle: true,
+          ),
           backgroundColor: currBackgroundColor,
-          body: Column(
-            children: [
-              Container(
-                child: Center(child: Text("home page"),),
-              )
-            ],
+          body: SingleChildScrollView(
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    tournament.id != null ? new Container(
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Card(
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "${tournament.name}",
+                                    style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                                  ),
+                                  Padding(padding: EdgeInsets.all(8),),
+                                  Image.asset(
+                                    getGameImage(),
+                                    height: 100,
+                                    width: 100,
+                                  ),
+                                  Padding(padding: EdgeInsets.all(8),),
+                                  Text(
+                                    "${tournament.game}  •  ${tournament.type! == "HIGH_SCHOOL" ? "High School" : tournament.type! == "COLLEGE" ? "College" : "College/HS"}  •  Division ${tournament.division}",
+                                    style: TextStyle(fontSize: 20, color: currTextColor),
+                                  ),
+                                  Padding(padding: EdgeInsets.all(8),),
+                                  MarkdownBody(
+                                    data: tournament.desc!,
+                                    shrinkWrap: true,
+                                    onTapLink: (String text, String? href, String title) {
+                                      launch(href!);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.all(8),),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Card(
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "Schedule",
+                                        style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8),),
+                                      ListTile(
+                                        title: Text(
+                                          "Season: ",
+                                          style: TextStyle(color: currTextColor),
+                                        ),
+                                        trailing: Text(
+                                          "${DateFormat("yMMMd").format(tournament.seasonStart!)} – ${DateFormat("yMMMd").format(tournament.seasonEnd!)}",
+                                          style: TextStyle(color: currTextColor),
+                                        ),
+                                      ),
+                                      ListTile(
+                                        title: Text(
+                                          "Playoffs Start: ",
+                                          style: TextStyle(color: currTextColor),
+                                        ),
+                                        trailing: Text(
+                                          "${DateFormat("yMMMd").format(tournament.playoffStart!)}",
+                                          style: TextStyle(color: currTextColor),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Card(
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 100),
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "Registration",
+                                        style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8),),
+                                      ListTile(
+                                        title: Text(
+                                          "Registration: ",
+                                          style: TextStyle(color: currTextColor),
+                                        ),
+                                        trailing: Text(
+                                          "${DateFormat("yMMMd").format(tournament.registrationStart!)} – ${DateFormat("yMMMd").format(tournament.registrationEnd!)}",
+                                          style: TextStyle(color: currTextColor),
+                                        ),
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8),),
+                                      Visibility(
+                                        visible: !registered && DateTime.now().isBefore(tournament.registrationStart!),
+                                        child: Container(
+                                          width: double.infinity,
+                                          child: CupertinoButton(
+                                            child: Text("Registration hasn't started yet!", style: TextStyle(fontFamily: "Ubuntu", color: pelBlue),),
+                                            onPressed: () {},
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: !registered && !registering && DateTime.now().isBefore(tournament.registrationEnd!) && DateTime.now().isAfter(tournament.registrationStart!),
+                                        child: Container(
+                                          width: double.infinity,
+                                          child: CupertinoButton(
+                                            child: Text("Register", style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),),
+                                            color: pelBlue,
+                                            onPressed: () {
+                                              handleRegistration();
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                          visible: !registered && registering,
+                                          child: Container(
+                                              width: double.infinity,
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    "Select team to register:",
+                                                    style: TextStyle(color: currTextColor, fontSize: 20),
+                                                  ),
+                                                  Padding(padding: EdgeInsets.all(4)),
+                                                  Column(
+                                                    children: registerTeams.map((team) => Container(
+                                                      child: Card(
+                                                        child: InkWell(
+                                                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                          onTap: () {
+                                                            registerTournament(team);
+                                                          },
+                                                          child: Container(
+                                                            padding: EdgeInsets.all(8),
+                                                            child: Row(
+                                                              children: [
+                                                                ExtendedImage.network(
+                                                                  "$PROXY_HOST/${team.logoUrl!}",
+                                                                  height: 65,
+                                                                  width: 65,
+                                                                ),
+                                                                Padding(padding: EdgeInsets.all(16)),
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "${team.name!}",
+                                                                        style: TextStyle(color: currTextColor, fontSize: 20),
+                                                                      ),
+                                                                      Padding(padding: EdgeInsets.all(2)),
+                                                                      Text(
+                                                                        "Team ${team.id}",
+                                                                        style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )).toList(),
+                                                  ),
+                                                  Text(
+                                                    "Don't see your team? You must be a Team Captain to register for tournaments.",
+                                                    style: TextStyle(color: currTextColor, fontSize: 16),
+                                                  ),
+                                                ],
+                                              )
+                                          )
+                                      ),
+                                      Visibility(
+                                        visible: !registered && DateTime.now().isAfter(tournament.registrationEnd!),
+                                        child: Container(
+                                          width: double.infinity,
+                                          child: CupertinoButton(
+                                            child: Text("Registration closed!", style: TextStyle(fontFamily: "Ubuntu", color: pelRed),),
+                                            onPressed: () {},
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: registered,
+                                        child: Container(
+                                          width: double.infinity,
+                                          child: CupertinoButton(
+                                            child: Text("Registered", style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),),
+                                            color: pelGreen,
+                                            onPressed: () {},
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: registered,
+                                        child: Container(
+                                          width: double.infinity,
+                                          child: Card(
+                                            child: Container(
+                                              padding: EdgeInsets.all(8),
+                                              child: Row(
+                                                children: [
+                                                  ExtendedImage.network(
+                                                    "$PROXY_HOST/${registeredTeam.logoUrl}",
+                                                    height: 65,
+                                                    width: 65,
+                                                  ),
+                                                  Padding(padding: EdgeInsets.all(16)),
+                                                  Expanded(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          "${registeredTeam.name}",
+                                                          style: TextStyle(color: currTextColor, fontSize: 20),
+                                                        ),
+                                                        Padding(padding: EdgeInsets.all(2)),
+                                                        Text(
+                                                          "Team ${registeredTeam.id}",
+                                                          style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: registered && currUser.roles.contains("${registeredTeam.id}-CAPTAIN"),
+                                        child: Container(
+                                          width: double.infinity,
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                battlefyCode != "_ _ _ _ _ _ _" ? "Don't forget to register on Battlefy with the code below!"
+                                                    : "Click the button below to get your Battlefy code!",
+                                                style: TextStyle(color: currTextColor, fontSize: 16),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: SelectableText(
+                                                      battlefyCode,
+                                                      style: TextStyle(color: currTextColor, fontSize: 35),
+                                                    ),
+                                                  ),
+                                                  CupertinoButton(
+                                                    padding: EdgeInsets.all(16),
+                                                    child: Text("Get Code", style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),),
+                                                    color: pelBlue,
+                                                    onPressed: () {
+                                                      getTournamentCode();
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ) : LoadingPage(),
+                    new Container(
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Card(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Teams",
+                                style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Column(
+                                children: teamList.map((team) => Container(
+                                  child: Card(
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                      onTap: () {
+                                        if (currUser.roles.contains("ADMIN")) {
+                                          router.navigateTo(context, "/teams/${team.id}", transition: TransitionType.native);
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Row(
+                                          children: [
+                                            ExtendedImage.network(
+                                              "$PROXY_HOST/${team.logoUrl!}",
+                                              height: 65,
+                                              width: 65,
+                                            ),
+                                            Padding(padding: EdgeInsets.all(8)),
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "${team.name!}",
+                                                    style: TextStyle(color: currTextColor, fontSize: 20),
+                                                  ),
+                                                  Padding(padding: EdgeInsets.all(2)),
+                                                  Text(
+                                                    "Team ${team.id}",
+                                                    style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            Visibility(
+                                                visible: currUser.roles.contains("ADMIN"),
+                                                child: CupertinoButton(
+                                                  child: Text("Remove", style: TextStyle(color: pelRed, fontFamily: "Ubuntu"),),
+                                                  onPressed: () {
+                                                    CoolAlert.show(
+                                                        context: context,
+                                                        type: CoolAlertType.confirm,
+                                                        borderRadius: 8,
+                                                        onConfirmBtnTap: () {
+                                                          removeTournamentTeam(team);
+                                                          router.pop(context);
+                                                        },
+                                                        width: 300,
+                                                        confirmBtnColor: pelBlue,
+                                                        title: "Are you sure?",
+                                                        text: "Are you sure you want to remove this team"
+                                                    );
+                                                  },
+                                                )
+                                            ),
+                                            Visibility(
+                                                visible: currUser.roles.contains("ADMIN"),
+                                                child: Icon(Icons.arrow_forward_ios, color: currDividerColor,)
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )).toList(),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(16),),
+                  ],
+                )
+            ),
           ),
         );
       }

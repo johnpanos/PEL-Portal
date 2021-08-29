@@ -18,6 +18,7 @@ import 'package:pel_portal/utils/theme.dart';
 import 'package:pel_portal/widgets/header.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:pel_portal/widgets/sidebar.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -484,13 +485,271 @@ class _HomePageState extends State<HomePage> {
       }
       else {
         return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Image.asset("images/logos/abbrev/abbrev-mono.png", height: 40,),
+                Text(
+                  "PORTAL",
+                  style: TextStyle(fontFamily: "Karla", fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ],
+            ),
+            centerTitle: true,
+          ),
+          drawer: MobileSidebar(),
           backgroundColor: currBackgroundColor,
-          body: Column(
-            children: [
-              Container(
-                child: Center(child: Text("home page"),),
-              )
-            ],
+          body: SingleChildScrollView(
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    new Container(
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: new Text("Welcome back, ${currUser.firstName}.", style: TextStyle(fontFamily: "LEMONMILK", color: currTextColor, fontSize: 30, fontWeight: FontWeight.bold), textAlign: TextAlign.start,),
+                    ),
+                    new Visibility(
+                      visible: currUser.verification!.status == null || currUser.verification!.status == "null",
+                      child: new Container(
+                        padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                        child: Card(
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(
+                              children: [
+                                Text("Student Verification Missing!", style: TextStyle(color: currTextColor, fontFamily: "LEMONMILK", fontSize: 35, fontWeight: FontWeight.bold),),
+                                Padding(padding: EdgeInsets.all(16)),
+                                Icon(Icons.error, color: pelRed, size: 75,),
+                                Padding(padding: EdgeInsets.all(16)),
+                                uploadingVerification ? HeartbeatProgressIndicator(
+                                  child: Image.asset("images/logos/icon/mark-color.png", height: 50,),
+                                ) : OutlinedButton(
+                                  onPressed: ()  {
+                                    if (currUser.verification!.fileUrl != null) {
+                                      launch(currUser.verification!.fileUrl!);
+                                    }
+                                    else {
+                                      uploadStudentProof();
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 500,
+                                    height: 100,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(currUser.verification!.fileUrl != null ? Icons.launch : Icons.upload, color: pelBlue,),
+                                        Padding(padding: EdgeInsets.all(4)),
+                                        Text(currUser.verification!.fileUrl != null ? "File Uploaded" : "Upload File", style: TextStyle(fontSize: 16, color: pelBlue),)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.all(8)),
+                                Visibility(
+                                  visible: currUser.verification!.fileUrl != null,
+                                  child: Container(
+                                    width: 500,
+                                    height: 50,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: CupertinoButton(
+                                            color: pelRed,
+                                            padding: EdgeInsets.zero,
+                                            child: Text("Remove File", style: TextStyle(fontFamily: "Ubuntu"),),
+                                            onPressed: () {
+                                              setState(() {
+                                                currUser.verification!.fileUrl = null;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        Padding(padding: EdgeInsets.all(4)),
+                                        Expanded(
+                                          child: CupertinoButton(
+                                            color: pelBlue,
+                                            padding: EdgeInsets.zero,
+                                            child: Text("Upload Verification", style: TextStyle(fontFamily: "Ubuntu")),
+                                            onPressed: () {
+                                              CoolAlert.show(
+                                                  context: context,
+                                                  type: CoolAlertType.confirm,
+                                                  borderRadius: 8,
+                                                  onConfirmBtnTap: () {
+                                                    sendVerification();
+                                                    router.pop(context);
+                                                  },
+                                                  width: 300,
+                                                  confirmBtnColor: pelBlue,
+                                                  title: "Are you sure?",
+                                                  text: "Once you confirm this verification request, you will not be able to modify the uploaded file until it has been reviewed."
+                                              );
+                                            },
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.all(16)),
+                                Text(
+                                  "In order to participate in PEL, you must be a current high school or college student in California. Please upload proof of your student status above. You may upload a file in any of the supported formats (.png, .jpg, .jpeg, .gif, .webp, .bmp, .pdf).",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                CupertinoButton(
+                                  child: Text("Check out our player eligibility guidelines for more information.", style: TextStyle(color: pelBlue, fontFamily: "Ubuntu"),),
+                                  onPressed: () => launch("https://support.pacificesports.org/player-and-team-eligibility"),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    new Visibility(
+                      visible: currUser.verification!.status == "UPLOADED",
+                      child: new Container(
+                        padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                        child: Card(
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(
+                              children: [
+                                Text("Student Verification Uploaded!", style: TextStyle(color: currTextColor, fontFamily: "LEMONMILK", fontSize: 35, fontWeight: FontWeight.bold),),
+                                Padding(padding: EdgeInsets.all(16)),
+                                Icon(Icons.check_circle, color: pelGreen, size: 75,),
+                                Padding(padding: EdgeInsets.all(16)),
+                                OutlinedButton(
+                                  onPressed: ()  {
+                                    launch(currUser.verification!.fileUrl!);
+                                  },
+                                  child: Container(
+                                    width: 500,
+                                    height: 100,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.launch, color: pelGreen,),
+                                        Padding(padding: EdgeInsets.all(4)),
+                                        Text("File Uploaded", style: TextStyle(fontSize: 16, color: pelGreen),)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.all(16)),
+                                Text(
+                                  "Your verification request has been successfully uploaded! We are currently processing your request which may take up to 48 hours. If your request is still processing after that, feel free to reach out to us via our discord server.",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                CupertinoButton(
+                                  child: Text("Check out our player eligibility guidelines for more information.", style: TextStyle(color: pelBlue, fontFamily: "Ubuntu"),),
+                                  onPressed: () => launch("https://support.pacificesports.org/player-and-team-eligibility"),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: currUser.verification!.status == "VERIFIED",
+                      child: new Container(
+                        padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Card(
+                              child: InkWell(
+                                borderRadius: BorderRadius.all(Radius.circular(8)),
+                                onTap: () {
+                                  router.navigateTo(context, "/teams", transition: TransitionType.native);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: ListTile(
+                                    leading: Icon(Icons.group),
+                                    title: Text("My Teams", style: TextStyle(fontSize: 16),),
+                                    trailing: Icon(Icons.arrow_forward_ios),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(padding: EdgeInsets.all(4),),
+                            Card(
+                              child: InkWell(
+                                borderRadius: BorderRadius.all(Radius.circular(8)),
+                                onTap: () {
+                                  router.navigateTo(context, "/tournaments", transition: TransitionType.native);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: ListTile(
+                                    leading: Icon(Icons.sports_esports),
+                                    title: Text("Tournaments", style: TextStyle(fontSize: 16),),
+                                    trailing: Icon(Icons.arrow_forward_ios),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: currUser.roles.contains("ADMIN"),
+                      child: Container(
+                        padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                        child: Card(
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(
+                              children: [
+                                Text("Admin Panel", style: TextStyle(fontFamily: "LEMONMILK", fontWeight: FontWeight.bold, fontSize: 20),),
+                                Padding(padding: EdgeInsets.all(4),),
+                                Card(
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                                    onTap: () {
+                                      router.navigateTo(context, "/admin/verification", transition: TransitionType.native);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: ListTile(
+                                        leading: Icon(Icons.verified_user),
+                                        title: Text("Verification Requests ($verificationRequests)", style: TextStyle(fontSize: 16),),
+                                        trailing: Icon(Icons.arrow_forward_ios),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Card(
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                                    onTap: () {
+                                      router.navigateTo(context, "/admin/users", transition: TransitionType.native);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: ListTile(
+                                        leading: Icon(Icons.person),
+                                        title: Text("Manage Users (${userList.length})", style: TextStyle(fontSize: 16),),
+                                        trailing: Icon(Icons.arrow_forward_ios),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(16),),
+                  ],
+                )
+            ),
           ),
         );
       }

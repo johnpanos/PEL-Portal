@@ -16,6 +16,7 @@ import 'package:pel_portal/utils/game_data.dart';
 import 'package:pel_portal/utils/theme.dart';
 import 'package:pel_portal/widgets/header.dart';
 import 'package:pel_portal/widgets/loading.dart';
+import 'package:pel_portal/widgets/sidebar.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -516,13 +517,255 @@ class _TeamsPageState extends State<TeamsPage> {
       }
       else {
         return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Image.asset("images/logos/abbrev/abbrev-mono.png", height: 40,),
+                Text(
+                  "PORTAL",
+                  style: TextStyle(fontFamily: "Karla", fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ],
+            ),
+            centerTitle: true,
+          ),
           backgroundColor: currBackgroundColor,
-          body: Column(
-            children: [
-              Container(
-                child: Center(child: Text("home page"),),
-              )
-            ],
+          floatingActionButton: Visibility(
+            visible: !creating,
+            child: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  creating = true;
+                });
+              },
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    new AnimatedContainer(
+                      duration: const Duration(milliseconds: 100),
+                      height: creating ? null : 0,
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Card(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Create Team",
+                                style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              uploadingLogo ? Container(
+                                padding: EdgeInsets.all(32),
+                                child: HeartbeatProgressIndicator(
+                                  child: Image.asset("images/logos/icon/mark-color.png", height: 50,),
+                                ),
+                              ) : ExtendedImage.network(
+                                "$PROXY_HOST/${newTeam.logoUrl}",
+                                width: 200,
+                                height: 200,
+                              ),
+                              Padding(padding: EdgeInsets.all(4),),
+                              CupertinoButton(
+                                child: Text("Edit Logo", style: TextStyle(fontFamily: "Ubuntu", color: pelBlue),),
+                                onPressed: () {
+                                  selectLogo();
+                                },
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              TextField(
+                                decoration: InputDecoration(
+                                    hintText: "Team Name",
+                                    border: OutlineInputBorder()
+                                ),
+                                onChanged: (input) {
+                                  newTeam.name = input;
+                                },
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Row(
+                                children: [
+                                  Text("Game:", style: TextStyle(color: currTextColor, fontSize: 16),),
+                                  Padding(padding: EdgeInsets.all(8),),
+                                  new Expanded(
+                                    child: new DropdownButton(
+                                      value: newTeam.game,
+                                      items: games.map((e) => DropdownMenuItem(
+                                        child: Text(e),
+                                        value: e,
+                                      )).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          newTeam.game = value.toString();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: CupertinoButton(
+                                      color: pelRed,
+                                      padding: EdgeInsets.zero,
+                                      child: Text("Cancel", style: TextStyle(fontFamily: "Ubuntu"),),
+                                      onPressed: () {
+                                        setState(() {
+                                          creating = false;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(padding: EdgeInsets.all(4)),
+                                  Expanded(
+                                    child: loading ? Container(
+                                      padding: EdgeInsets.all(32),
+                                      child: HeartbeatProgressIndicator(
+                                        child: Image.asset("images/logos/icon/mark-color.png", height: 50,),
+                                      ),
+                                    ) : CupertinoButton(
+                                      color: pelBlue,
+                                      padding: EdgeInsets.zero,
+                                      child: Text("Create", style: TextStyle(fontFamily: "Ubuntu")),
+                                      onPressed: () {
+                                        createTeam();
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    new Container(
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Card(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Text(
+                                "My Teams",
+                                style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Column(
+                                children: teamList.map((team) => Container(
+                                  child: Card(
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                      onTap: () {
+                                        router.navigateTo(context, "/teams/${team.id}", transition: TransitionType.native);
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Row(
+                                          children: [
+                                            ExtendedImage.network(
+                                              "$PROXY_HOST/${team.logoUrl!}",
+                                              height: 65,
+                                              width: 65,
+                                            ),
+                                            Padding(padding: EdgeInsets.all(16)),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    team.name!,
+                                                    style: TextStyle(color: currTextColor, fontSize: 20),
+                                                  ),
+                                                  Padding(padding: EdgeInsets.all(2)),
+                                                  Text(
+                                                    "Team ${team.id!}",
+                                                    style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                  ),
+                                                  Padding(padding: EdgeInsets.all(4)),
+                                                  Visibility(
+                                                    visible: currUser.roles.contains("${team.id}-CAPTAIN"),
+                                                    child: Card(
+                                                      color: pelGreen,
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(8),
+                                                        child: Text("Team Captain", style: TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.center,),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(padding: EdgeInsets.all(8)),
+                                            Container(
+                                                child: Icon(Icons.arrow_forward_ios, color: currDividerColor,)
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )).toList(),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    new Container(
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Card(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Join Team",
+                                style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                          hintText: "Team Number",
+                                          border: OutlineInputBorder()
+                                      ),
+                                      onChanged: (input) {
+                                        joinTeamId = input;
+                                      },
+                                    ),
+                                  ),
+                                  Padding(padding: EdgeInsets.all(8),),
+                                  CupertinoButton(
+                                    color: pelBlue,
+                                    child: Text("Join", style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),),
+                                    onPressed: () {
+                                      joinTeam();
+                                    },
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(16),),
+                  ],
+                )
+            ),
           ),
         );
       }

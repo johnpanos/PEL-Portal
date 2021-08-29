@@ -297,13 +297,161 @@ class _ManageVerificationPageState extends State<ManageVerificationPage> {
       }
       else {
         return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Image.asset("images/logos/abbrev/abbrev-mono.png", height: 40,),
+                Text(
+                  "PORTAL",
+                  style: TextStyle(fontFamily: "Karla", fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ],
+            ),
+            centerTitle: true,
+          ),
           backgroundColor: currBackgroundColor,
-          body: Column(
-            children: [
-              Container(
-                child: Center(child: Text("home page"),),
-              )
-            ],
+          body: SingleChildScrollView(
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    new Container(
+                      padding: new EdgeInsets.only(left: 8, right: 8, top: 8),
+                      child: Card(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Verification Requests (${userList.length})",
+                                style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                              Padding(padding: EdgeInsets.all(8),),
+                              Container(
+                                height: MediaQuery.of(context).size.height - 175,
+                                child: ListView.builder(
+                                  itemCount: userList.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return ExpansionTile(
+                                      title: Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                                                  child: ExtendedImage.network(
+                                                    "$PROXY_HOST/${userList[index].profilePicture!}",
+                                                    height: 65,
+                                                    width: 65,
+                                                  ),
+                                                ),
+                                                Padding(padding: EdgeInsets.all(16)),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    SelectableText(
+                                                      "${userList[index].firstName!} ${userList[index].lastName!}",
+                                                      style: TextStyle(color: currTextColor, fontSize: 20),
+                                                    ),
+                                                    Padding(padding: EdgeInsets.all(2)),
+                                                    SelectableText(
+                                                      "${userList[index].email!}",
+                                                      style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      children: [
+                                        ListTile(
+                                          title: SelectableText("School", style: TextStyle(color: currTextColor),),
+                                          trailing: SelectableText("${userList[index].school}", style: TextStyle(color: currTextColor),),
+                                        ),
+                                        ListTile(
+                                          title: SelectableText("Grad Year", style: TextStyle(color: currTextColor),),
+                                          trailing: SelectableText("${userList[index].gradYear}", style: TextStyle(color: currTextColor),),
+                                        ),
+                                        ListTile(
+                                          title: SelectableText("Verification", style: TextStyle(color: currTextColor),),
+                                          trailing: Container(
+                                            width: MediaQuery.of(context).size.width / 2,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: OutlinedButton(
+                                                    onPressed: ()  {
+                                                      launch(currUser.verification!.fileUrl!);
+                                                    },
+                                                    child: Container(
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Icon(Icons.launch, color: pelBlue,),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(padding: EdgeInsets.all(2)),
+                                                Expanded(
+                                                  child: CupertinoButton(
+                                                    padding: EdgeInsets.zero,
+                                                    child: Text("Deny", style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),),
+                                                    color: pelRed,
+                                                    onPressed: () {
+                                                      userList[index].verification!.status = "null";
+                                                      updateUser(userList[index]);
+                                                      setState(() {
+                                                        userList.removeAt(index);
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                                Padding(padding: EdgeInsets.all(2)),
+                                                Expanded(
+                                                  child: CupertinoButton(
+                                                      padding: EdgeInsets.zero,
+                                                      child: Text("Approve", style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),),
+                                                      color: pelGreen,
+                                                      onPressed: () {
+                                                        userList[index].verification!.status = "VERIFIED";
+                                                        updateUser(userList[index]);
+                                                        setState(() {
+                                                          userList.removeAt(index);
+                                                        });
+                                                      }
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        ListTile(
+                                          title: SelectableText("Verification Submitted", style: TextStyle(color: currTextColor),),
+                                          trailing: SelectableText("${DateFormat().format(userList[index].verification!.createdAt!)}", style: TextStyle(color: currTextColor),),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(16),),
+                  ],
+                )
+            ),
           ),
         );
       }
