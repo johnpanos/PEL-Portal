@@ -135,19 +135,19 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
 
   String getUsername(User user) {
     if (team.game == "VALORANT") {
-      return "Riot ID: ${user.connections!.valorantId}";
+      return "Riot ID: ${user.connections?.valorantId}";
     }
     else if (team.game == "League of Legends") {
-      return "Riot ID: ${user.connections!.leagueId}";
+      return "Riot ID: ${user.connections?.leagueId}";
     }
     else if (team.game == "Overwatch") {
-      return "BattleTag: ${user.connections!.battleTag}";
+      return "BattleTag: ${user.connections?.battleTag}";
     }
     else if (team.game == "Rocket League") {
-      return "Rocket ID: ${user.connections!.rocketId}";
+      return "Rocket ID: ${user.connections?.rocketId}";
     }
     else if (team.game == "Splitgate") {
-      return "Steam Profile: ${user.connections!.steamId}";
+      return "Steam ID: ${user.connections?.steamId?.split("/id/")[1]}";
     }
     else {
       return "Game not found";
@@ -282,7 +282,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                   ),
                                                   Padding(padding: EdgeInsets.all(32)),
                                                   SelectableText(
-                                                    "Discord: ${user.connections!.discordTag}",
+                                                    "Discord: ${user.connections?.discordTag}",
                                                     style: TextStyle(color: currTextColor, fontSize: 20),
                                                   ),
                                                   Padding(padding: EdgeInsets.all(16)),
