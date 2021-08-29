@@ -119,7 +119,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                                     ),
                                     Padding(padding: EdgeInsets.all(8),),
                                     Container(
-                                      height: MediaQuery.of(context).size.height / 1.5,
+                                      height: MediaQuery.of(context).size.height - 320,
                                       child: ListView.builder(
                                         itemCount: userList.length,
                                         itemBuilder: (BuildContext context, int index) {
@@ -199,6 +199,35 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                                                     ],
                                                   ),
                                                 ),
+                                              ),
+                                              ExpansionTile(
+                                                title: SelectableText("Connections", style: TextStyle(color: currTextColor),),
+                                                children: [
+                                                  ListTile(
+                                                    title: SelectableText("Discord Tag", style: TextStyle(color: currTextColor),),
+                                                    trailing: SelectableText("${userList[index].connections?.discordTag}", style: TextStyle(color: currTextColor),),
+                                                  ),
+                                                  ListTile(
+                                                    title: SelectableText("Steam ID", style: TextStyle(color: currTextColor),),
+                                                    trailing: SelectableText("${userList[index].connections?.steamId?.split("/id/")[1]}", style: TextStyle(color: currTextColor),),
+                                                  ),
+                                                  ListTile(
+                                                    title: SelectableText("Valorant ID", style: TextStyle(color: currTextColor),),
+                                                    trailing: SelectableText("${userList[index].connections?.valorantId}", style: TextStyle(color: currTextColor),),
+                                                  ),
+                                                  ListTile(
+                                                    title: SelectableText("League of Legends ID", style: TextStyle(color: currTextColor),),
+                                                    trailing: SelectableText("${userList[index].connections?.leagueId}", style: TextStyle(color: currTextColor),),
+                                                  ),
+                                                  ListTile(
+                                                    title: SelectableText("Battle Tag", style: TextStyle(color: currTextColor),),
+                                                    trailing: SelectableText("${userList[index].connections?.battleTag}", style: TextStyle(color: currTextColor),),
+                                                  ),
+                                                  ListTile(
+                                                    title: SelectableText("Rocket ID", style: TextStyle(color: currTextColor),),
+                                                    trailing: SelectableText("${userList[index].connections?.rocketId}", style: TextStyle(color: currTextColor),),
+                                                  ),
+                                                ],
                                               ),
                                               ListTile(
                                                 title: SelectableText("Last Updated", style: TextStyle(color: currTextColor),),

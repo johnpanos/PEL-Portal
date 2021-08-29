@@ -401,51 +401,55 @@ class _TeamsPageState extends State<TeamsPage> {
                                             child: Container(
                                               padding: EdgeInsets.all(8),
                                               child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      ExtendedImage.network(
-                                                        "$PROXY_HOST/${team.logoUrl!}",
-                                                        height: 100,
-                                                        width: 100,
-                                                      ),
-                                                      Padding(padding: EdgeInsets.all(16)),
-                                                      Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            team.name!,
-                                                            style: TextStyle(color: currTextColor, fontSize: 20),
-                                                          ),
-                                                          Padding(padding: EdgeInsets.all(2)),
-                                                          Text(
-                                                            "Team ${team.id!}",
-                                                            style: TextStyle(color: currDividerColor, fontSize: 16),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      Padding(padding: EdgeInsets.all(32)),
-                                                      Text(
-                                                        team.game!,
-                                                        style: TextStyle(color: currTextColor, fontSize: 20),
-                                                      ),
-                                                      Padding(padding: EdgeInsets.all(16)),
-                                                      Visibility(
-                                                        visible: currUser.roles.contains("${team.id}-CAPTAIN"),
-                                                        child: Card(
-                                                          color: pelGreen,
-                                                          child: Container(
-                                                            padding: EdgeInsets.all(8),
-                                                            child: Text("Team Captain", style: TextStyle(color: Colors.white, fontSize: 16),),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
+                                                  ExtendedImage.network(
+                                                    "$PROXY_HOST/${team.logoUrl!}",
+                                                    height: 100,
+                                                    width: 100,
                                                   ),
+                                                  Padding(padding: EdgeInsets.all(16)),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          team.name!,
+                                                          style: TextStyle(color: currTextColor, fontSize: 20),
+                                                        ),
+                                                        Padding(padding: EdgeInsets.all(2)),
+                                                        Text(
+                                                          "Team ${team.id!}",
+                                                          style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      team.game!,
+                                                      style: TextStyle(color: currTextColor, fontSize: 20),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Visibility(
+                                                      visible: currUser.roles.contains("${team.id}-CAPTAIN"),
+                                                      child: Card(
+                                                        color: pelGreen,
+                                                        child: Container(
+                                                          padding: EdgeInsets.all(8),
+                                                          child: Text("Team Captain", style: TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.center,),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(padding: EdgeInsets.all(16)),
                                                   Container(
-                                                    child: Icon(Icons.arrow_forward_ios, color: currDividerColor,)
+                                                      child: Icon(Icons.arrow_forward_ios, color: currDividerColor,)
                                                   )
                                                 ],
                                               ),

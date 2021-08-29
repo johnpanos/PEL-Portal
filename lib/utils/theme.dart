@@ -14,7 +14,7 @@ final pelGrey = Color(0xFF323232);
 const lightTextColor = Colors.black;
 const lightBackgroundColor = Color(0xFFf9f9f9);
 const lightCardColor = Colors.white;
-const lightDividerColor = Color(0xFFC9C9C9);
+const lightDividerColor = Color(0xFFA8A8A8);
 
 // DARK THEME
 const darkTextColor = Color(0xFFFFFFFF);

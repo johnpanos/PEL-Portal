@@ -11,6 +11,8 @@ import 'package:pel_portal/pages/not_found_page.dart';
 import 'package:pel_portal/pages/profile/profile_page.dart';
 import 'package:pel_portal/pages/teams/team_details_page.dart';
 import 'package:pel_portal/pages/teams/teams_page.dart';
+import 'package:pel_portal/pages/tournaments/tournament_details_page.dart';
+import 'package:pel_portal/pages/tournaments/tournaments_page.dart';
 import 'package:pel_portal/utils/config.dart';
 import 'package:pel_portal/utils/theme.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -57,6 +59,14 @@ Future<void> main() async {
   }));
   router.define('/teams/:id', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
     return new TeamDetailsPage(params!["id"][0]);
+  }));
+
+  // TOURNAMENTS ROUTES
+  router.define('/tournaments', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
+    return new TournamentsPage();
+  }));
+  router.define('/tournaments/:id', handler: new Handler(handlerFunc: (BuildContext? context, Map<String, dynamic>? params) {
+    return new TournamentDetailsPage(params!["id"][0]);
   }));
 
   router.notFoundHandler = Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {

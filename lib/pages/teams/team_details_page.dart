@@ -156,7 +156,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-      if (currUser.id != null && currUser.verification!.status == "VERIFIED" && team.id != null) {
+      if (currUser.id != null && currUser.verification!.status == "VERIFIED") {
         if (MediaQuery.of(context).size.width > 800) {
           return Scaffold(
             backgroundColor: currBackgroundColor,
@@ -183,7 +183,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                 ],
                               ),
                             ),
-                            new Container(
+                            team.id != null ? new Container(
                               width: (MediaQuery.of(context).size.width > 1300) ? 1100 : MediaQuery.of(context).size.width - 50,
                               padding: new EdgeInsets.only(left: 16, right: 16, top: 16),
                               child: Card(
@@ -265,39 +265,50 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                     ),
                                                   ),
                                                   Padding(padding: EdgeInsets.all(16)),
-                                                  Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        "${user.firstName!} ${user.lastName!}",
-                                                        style: TextStyle(color: currTextColor, fontSize: 20),
-                                                      ),
-                                                      Padding(padding: EdgeInsets.all(2)),
-                                                      Text(
-                                                        "${user.email!}",
-                                                        style: TextStyle(color: currDividerColor, fontSize: 16),
-                                                      )
-                                                    ],
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        SelectableText(
+                                                          "${user.firstName!} ${user.lastName!}",
+                                                          style: TextStyle(color: currTextColor, fontSize: 20),
+                                                        ),
+                                                        Padding(padding: EdgeInsets.all(2)),
+                                                        SelectableText(
+                                                          "${user.email!}",
+                                                          style: TextStyle(color: currDividerColor, fontSize: 16),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
-                                                  Padding(padding: EdgeInsets.all(32)),
-                                                  SelectableText(
-                                                    "Discord: ${user.connections?.discordTag}",
-                                                    style: TextStyle(color: currTextColor, fontSize: 20),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: SelectableText(
+                                                      "Discord: ${user.connections?.discordTag}",
+                                                      style: TextStyle(color: currTextColor, fontSize: 20),
+                                                      textAlign: TextAlign.center,
+                                                    ),
                                                   ),
-                                                  Padding(padding: EdgeInsets.all(16)),
-                                                  SelectableText(
-                                                    getUsername(user),
-                                                    style: TextStyle(color: currTextColor, fontSize: 20),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: SelectableText(
+                                                      getUsername(user),
+                                                      style: TextStyle(color: currTextColor, fontSize: 20),
+                                                      textAlign: TextAlign.center,
+                                                    ),
                                                   ),
-                                                  Padding(padding: EdgeInsets.all(16)),
-                                                  Visibility(
-                                                    visible: user.roles.contains("${team.id}-CAPTAIN"),
-                                                    child: Card(
-                                                      color: pelGreen,
-                                                      child: Container(
-                                                        padding: EdgeInsets.all(8),
-                                                        child: Text("Team Captain", style: TextStyle(color: Colors.white, fontSize: 16),),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Visibility(
+                                                      visible: user.roles.contains("${team.id}-CAPTAIN"),
+                                                      child: Card(
+                                                        color: pelGreen,
+                                                        child: Container(
+                                                          padding: EdgeInsets.all(8),
+                                                          child: Text("Team Captain", style: TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.center,),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -332,7 +343,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                   ),
                                 ),
                               ),
-                            ),
+                            ) : LoadingPage(),
                             Padding(padding: EdgeInsets.all(16),),
                           ],
                         )

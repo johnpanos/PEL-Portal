@@ -47,6 +47,7 @@ dependencies:
   progress_indicators: ^1.0.0
   skeleton_text: ^3.0.0
   easy_web_view2: ^0.0.3
+  datetime_picker_formfield: ^2.0.0
 
 dev_dependencies:
   flutter_test:

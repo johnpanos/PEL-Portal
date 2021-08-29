@@ -146,7 +146,7 @@ class _ManageVerificationPageState extends State<ManageVerificationPage> {
                                     ),
                                     Padding(padding: EdgeInsets.all(8),),
                                     Container(
-                                      height: MediaQuery.of(context).size.height - 300,
+                                      height: MediaQuery.of(context).size.height - 320,
                                       child: ListView.builder(
                                         itemCount: userList.length,
                                         itemBuilder: (BuildContext context, int index) {
