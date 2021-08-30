@@ -61,6 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
           currUser.updatedAt = DateTime.now();
           await AuthService.getAuthToken().then((_) async {
             var response = await http.get(Uri.parse("$API_HOST/api/users/${currUser.id}"), headers: {"Authorization": authToken});
+            print(response.body);
             if (response.statusCode == 200) {
               currUser = new User.fromJson(jsonDecode(response.body)["data"]);
               print("====== USER DEBUG INFO ======");

@@ -303,270 +303,210 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     Padding(padding: EdgeInsets.all(8),),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Image.asset("images/steam_logo.png", height: 32, width: 32,),
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Container(
-                                              width: MediaQuery.of(context).size.width / 2,
-                                              child: TextFormField(
-                                                decoration: InputDecoration(
-                                                    hintText: "Steam Profile URL",
-                                                    border: currUser.connections!.steamId != "null" ? InputBorder.none : OutlineInputBorder()
-                                                ),
-                                                onChanged: (input) {
-                                                  currUser.connections!.steamId = input;
-                                                },
-                                                initialValue: currUser.connections!.steamId != "null" ? currUser.connections!.steamId! : null,
-                                                enabled: currUser.connections!.steamId == "null",
-                                                style: TextStyle(color: currTextColor, fontSize: 16),
-                                              ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Image.asset("images/steam_logo.png", height: 32, width: 32,),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Expanded(
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "Steam Profile URL",
+                                                border: currUser.connections!.steamId != "null" ? InputBorder.none : OutlineInputBorder()
                                             ),
-                                          ],
-                                        ),
-                                        Visibility(
-                                          visible: currUser.connections!.steamId != "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              currUser.connections!.steamId = "null";
-                                              updateUser();
+                                            onChanged: (input) {
+                                              currUser.connections!.steamId = input;
                                             },
-                                            child: Text(
-                                              "Remove",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
-                                            ),
+                                            initialValue: currUser.connections!.steamId != "null" ? currUser.connections!.steamId! : null,
+                                            enabled: currUser.connections!.steamId == "null",
+                                            style: TextStyle(color: currTextColor, fontSize: 16),
                                           ),
                                         ),
-                                        Visibility(
-                                          visible: currUser.connections!.steamId == "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              updateUser();
-                                            },
-                                            color: pelBlue,
-                                            child: Text(
-                                              "Add",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
-                                            ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        currUser.connections!.steamId != "null" ? CupertinoButton(
+                                          onPressed: () {
+                                            currUser.connections!.steamId = "null";
+                                            updateUser();
+                                          },
+                                          child: Text(
+                                            "Remove",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
+                                          ),
+                                        ) : CupertinoButton(
+                                          onPressed: () {
+                                            updateUser();
+                                          },
+                                          color: pelBlue,
+                                          child: Text(
+                                            "Add",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
                                           ),
                                         )
                                       ],
                                     ),
                                     Padding(padding: EdgeInsets.all(8),),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Image.asset("images/valorant_logo.png", height: 32, width: 32,),
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Container(
-                                              width: MediaQuery.of(context).size.width / 2,
-                                              child: TextFormField(
-                                                decoration: InputDecoration(
-                                                  hintText: "Valorant ID",
-                                                  border: currUser.connections!.valorantId != "null" ? InputBorder.none : OutlineInputBorder()
-                                                ),
-                                                onChanged: (input) {
-                                                  currUser.connections!.valorantId = input;
-                                                },
-                                                initialValue: currUser.connections!.valorantId != "null" ? currUser.connections!.valorantId! : null,
-                                                enabled: currUser.connections!.valorantId == "null",
-                                                style: TextStyle(color: currTextColor, fontSize: 16),
-                                              ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Image.asset("images/valorant_logo.png", height: 32, width: 32,),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Expanded(
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                              hintText: "Valorant ID",
+                                              border: currUser.connections!.valorantId != "null" ? InputBorder.none : OutlineInputBorder()
                                             ),
-                                          ],
-                                        ),
-                                        Visibility(
-                                          visible: currUser.connections!.valorantId != "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              currUser.connections!.valorantId = "null";
-                                              updateUser();
+                                            onChanged: (input) {
+                                              currUser.connections!.valorantId = input;
                                             },
-                                            child: Text(
-                                              "Remove",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
-                                            ),
+                                            initialValue: currUser.connections!.valorantId != "null" ? currUser.connections!.valorantId! : null,
+                                            enabled: currUser.connections!.valorantId == "null",
+                                            style: TextStyle(color: currTextColor, fontSize: 16),
                                           ),
                                         ),
-                                        Visibility(
-                                          visible: currUser.connections!.valorantId == "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              updateUser();
-                                            },
-                                            color: pelBlue,
-                                            child: Text(
-                                              "Add",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
-                                            ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        currUser.connections!.valorantId != "null" ? CupertinoButton(
+                                          onPressed: () {
+                                            currUser.connections!.valorantId = "null";
+                                            updateUser();
+                                          },
+                                          child: Text(
+                                            "Remove",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
+                                          ),
+                                        ) : CupertinoButton(
+                                          onPressed: () {
+                                            updateUser();
+                                          },
+                                          color: pelBlue,
+                                          child: Text(
+                                            "Add",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
                                           ),
                                         )
                                       ],
                                     ),
                                     Padding(padding: EdgeInsets.all(8),),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Image.asset("images/league_logo.png", height: 32, width: 32,),
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Container(
-                                              width: MediaQuery.of(context).size.width / 2,
-                                              child: TextFormField(
-                                                decoration: InputDecoration(
-                                                    hintText: "League of Legends ID",
-                                                    border: currUser.connections!.leagueId != "null" ? InputBorder.none : OutlineInputBorder()
-                                                ),
-                                                onChanged: (input) {
-                                                  currUser.connections!.leagueId = input;
-                                                },
-                                                initialValue: currUser.connections!.leagueId != "null" ? currUser.connections!.leagueId! : null,
-                                                enabled: currUser.connections!.leagueId == "null",
-                                                style: TextStyle(color: currTextColor, fontSize: 16),
-                                              ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Image.asset("images/league_logo.png", height: 32, width: 32,),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Expanded(
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "League of Legends ID",
+                                                border: currUser.connections!.leagueId != "null" ? InputBorder.none : OutlineInputBorder()
                                             ),
-                                          ],
-                                        ),
-                                        Visibility(
-                                          visible: currUser.connections!.leagueId != "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              currUser.connections!.leagueId = "null";
-                                              updateUser();
+                                            onChanged: (input) {
+                                              currUser.connections!.leagueId = input;
                                             },
-                                            child: Text(
-                                              "Remove",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
-                                            ),
+                                            initialValue: currUser.connections!.leagueId != "null" ? currUser.connections!.leagueId! : null,
+                                            enabled: currUser.connections!.leagueId == "null",
+                                            style: TextStyle(color: currTextColor, fontSize: 16),
                                           ),
                                         ),
-                                        Visibility(
-                                          visible: currUser.connections!.leagueId == "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              updateUser();
-                                            },
-                                            color: pelBlue,
-                                            child: Text(
-                                              "Add",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
-                                            ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        currUser.connections!.leagueId != "null" ? CupertinoButton(
+                                          onPressed: () {
+                                            currUser.connections!.leagueId = "null";
+                                            updateUser();
+                                          },
+                                          child: Text(
+                                            "Remove",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
+                                          ),
+                                        ) : CupertinoButton(
+                                          onPressed: () {
+                                            updateUser();
+                                          },
+                                          color: pelBlue,
+                                          child: Text(
+                                            "Add",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
                                           ),
                                         )
                                       ],
                                     ),
                                     Padding(padding: EdgeInsets.all(8),),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Image.asset("images/ow_logo.png", height: 32, width: 32,),
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Container(
-                                              width: MediaQuery.of(context).size.width / 2,
-                                              child: TextFormField(
-                                                decoration: InputDecoration(
-                                                    hintText: "Overwatch Battle Tag",
-                                                    border: currUser.connections!.battleTag != "null" ? InputBorder.none : OutlineInputBorder()
-                                                ),
-                                                onChanged: (input) {
-                                                  currUser.connections!.battleTag = input;
-                                                },
-                                                initialValue: currUser.connections!.battleTag != "null" ? currUser.connections!.battleTag! : null,
-                                                enabled: currUser.connections!.battleTag == "null",
-                                                style: TextStyle(color: currTextColor, fontSize: 16),
-                                              ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Image.asset("images/ow_logo.png", height: 32, width: 32,),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Expanded(
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "Overwatch Battle Tag",
+                                                border: currUser.connections!.battleTag != "null" ? InputBorder.none : OutlineInputBorder()
                                             ),
-                                          ],
-                                        ),
-                                        Visibility(
-                                          visible: currUser.connections!.battleTag != "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              currUser.connections!.battleTag = "null";
-                                              updateUser();
+                                            onChanged: (input) {
+                                              currUser.connections!.battleTag = input;
                                             },
-                                            child: Text(
-                                              "Remove",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
-                                            ),
+                                            initialValue: currUser.connections!.battleTag != "null" ? currUser.connections!.battleTag! : null,
+                                            enabled: currUser.connections!.battleTag == "null",
+                                            style: TextStyle(color: currTextColor, fontSize: 16),
                                           ),
                                         ),
-                                        Visibility(
-                                          visible: currUser.connections!.battleTag == "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              updateUser();
-                                            },
-                                            color: pelBlue,
-                                            child: Text(
-                                              "Add",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
-                                            ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        currUser.connections!.battleTag != "null" ? CupertinoButton(
+                                          onPressed: () {
+                                            currUser.connections!.battleTag = "null";
+                                            updateUser();
+                                          },
+                                          child: Text(
+                                            "Remove",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
+                                          ),
+                                        ) : CupertinoButton(
+                                          onPressed: () {
+                                            updateUser();
+                                          },
+                                          color: pelBlue,
+                                          child: Text(
+                                            "Add",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
                                           ),
                                         )
                                       ],
                                     ),
                                     Padding(padding: EdgeInsets.all(8),),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Image.asset("images/rocket_league_logo.png", height: 32, width: 32,),
-                                            Padding(padding: EdgeInsets.all(8),),
-                                            Container(
-                                              width: MediaQuery.of(context).size.width / 2,
-                                              child: TextFormField(
-                                                decoration: InputDecoration(
-                                                    hintText: "Rocket ID",
-                                                    border: currUser.connections!.rocketId != "null" ? InputBorder.none : OutlineInputBorder()
-                                                ),
-                                                onChanged: (input) {
-                                                  currUser.connections!.rocketId = input;
-                                                },
-                                                initialValue: currUser.connections!.rocketId != "null" ? currUser.connections!.rocketId! : null,
-                                                enabled: currUser.connections!.rocketId == "null",
-                                                style: TextStyle(color: currTextColor, fontSize: 16),
-                                              ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Image.asset("images/rocket_league_logo.png", height: 32, width: 32,),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Expanded(
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "Rocket ID",
+                                                border: currUser.connections!.rocketId != "null" ? InputBorder.none : OutlineInputBorder()
                                             ),
-                                          ],
-                                        ),
-                                        Visibility(
-                                          visible: currUser.connections!.rocketId != "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              currUser.connections!.rocketId = "null";
-                                              updateUser();
+                                            onChanged: (input) {
+                                              currUser.connections!.rocketId = input;
                                             },
-                                            child: Text(
-                                              "Remove",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
-                                            ),
+                                            initialValue: currUser.connections!.rocketId != "null" ? currUser.connections!.rocketId! : null,
+                                            enabled: currUser.connections!.rocketId == "null",
+                                            style: TextStyle(color: currTextColor, fontSize: 16),
                                           ),
                                         ),
-                                        Visibility(
-                                          visible: currUser.connections!.rocketId == "null",
-                                          child: CupertinoButton(
-                                            onPressed: () {
-                                              updateUser();
-                                            },
-                                            color: pelBlue,
-                                            child: Text(
-                                              "Add",
-                                              style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
-                                            ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        currUser.connections!.rocketId != "null" ? CupertinoButton(
+                                          onPressed: () {
+                                            currUser.connections!.rocketId = "null";
+                                            updateUser();
+                                          },
+                                          child: Text(
+                                            "Remove",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
+                                          ),
+                                        ) : CupertinoButton(
+                                          onPressed: () {
+                                            updateUser();
+                                          },
+                                          color: pelBlue,
+                                          child: Text(
+                                            "Add",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
                                           ),
                                         )
                                       ],

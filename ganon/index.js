@@ -50,7 +50,7 @@ app.post('/auth/login', (req, res) => {
   });
 });
 
-app.use('/auth/discord', require('./discord.js'));
+app.use('/api/auth/discord', require('./discord.js'));
 
 app.use((err, req, res, next) => {
     switch (err.message) {

@@ -27,7 +27,7 @@ Future<void> main() async {
       ),
     ),
   );
-
+  print('PEL Portal v${appVersion.toString()}');
   FirebaseApp app = await Firebase.initializeApp();
   print('Initialized default app $app');
   FirebaseAnalytics analytics = FirebaseAnalytics();

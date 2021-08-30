@@ -206,7 +206,7 @@ class _ManageVerificationPageState extends State<ManageVerificationPage> {
                                                       Expanded(
                                                         child: OutlinedButton(
                                                           onPressed: ()  {
-                                                            launch(currUser.verification!.fileUrl!);
+                                                            launch(userList[index].verification!.fileUrl!);
                                                           },
                                                           child: Container(
                                                             height: 100,
@@ -388,7 +388,7 @@ class _ManageVerificationPageState extends State<ManageVerificationPage> {
                                                 Expanded(
                                                   child: OutlinedButton(
                                                     onPressed: ()  {
-                                                      launch(currUser.verification!.fileUrl!);
+                                                      launch(userList[index].verification!.fileUrl!);
                                                     },
                                                     child: Container(
                                                       child: Row(
