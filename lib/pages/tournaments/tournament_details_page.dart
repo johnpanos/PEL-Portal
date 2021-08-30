@@ -72,7 +72,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
             tournament = new Tournament.fromJson(tournamentJson);
           });
           for (int i = 0; i < tournamentJson["teams"].length; i++) {
-            getTournamentTeams(tournamentJson["teams"][i]["teamId"]);
+            getTournamentTeams(tournamentJson["teams"][i]["teamId"], tournamentJson["teams"][i]["battlefyCode"]);
           }
         }
         else {
@@ -90,7 +90,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
     });
   }
 
-  Future<void> getTournamentTeams(int teamId) async {
+  Future<void> getTournamentTeams(int teamId, String battlefyCode) async {
     await AuthService.getAuthToken().then((_) async {
       await http.get(Uri.parse("$API_HOST/api/teams/$teamId"), headers: {"Authorization": authToken}).then((value) {
         if (value.statusCode == 200) {
@@ -102,6 +102,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
             setState(() {
               registered = true;
               registeredTeam = Team.fromJson(teamJson);
+              this.battlefyCode = battlefyCode;
             });
           }
         }
@@ -145,7 +146,18 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
 
   void handleRegistration() {
     if (DateTime.now().isBefore(tournament.registrationEnd!)) {
-      if (currUser.roles.contains(tournament.type) || tournament.type == "BOTH") {
+      if (!currUser.roles.contains(tournament.type) && tournament.type != "BOTH") {
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            borderRadius: 8,
+            width: 300,
+            confirmBtnColor: pelRed,
+            title: "Error!",
+            text: "You must be a ${tournament.type} student to register in this tournament!"
+        );
+      }
+      else {
         setState(() {
           registering = true;
         });
@@ -177,18 +189,84 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
           }
         });
       }
-      else {
-        CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            borderRadius: 8,
-            width: 300,
-            confirmBtnColor: pelRed,
-            title: "Error!",
-            text: "You must be a ${tournament.type} student to register in this tournament!"
-        );
-      }
     }
+  }
+
+  Future<void> canRegister(Team team) async {
+    await AuthService.getAuthToken().then((_) async {
+      await http.get(Uri.parse("$API_HOST/api/teams/${team.id}"), headers: {"Authorization": authToken}).then((value) {
+        if (value.statusCode == 200) {
+          var teamsJson = jsonDecode(value.body)["data"];
+          // VALORANT
+          if (tournament.game == "VALORANT") {
+            print(gameRanks[tournament.game]!.indexOf(team.avgRank!));
+            if (tournament.division == "2" && gameRanks[tournament.game]!.indexOf(team.avgRank!) > gameRanks[tournament.game]!.indexOf("Gold")) {
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.error,
+                  borderRadius: 8,
+                  width: 300,
+                  confirmBtnColor: pelRed,
+                  title: "Team not eligible!",
+                  text: "You're team has an average rank of ${team.avgRank}, which is too high to participate in ${tournament.game} Division ${tournament.division} events."
+              );
+              return;
+            }
+            if (teamsJson["users"].length < 5) {
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.error,
+                  borderRadius: 8,
+                  width: 300,
+                  confirmBtnColor: pelRed,
+                  title: "Team not eligible!",
+                  text: "You're team does not meet the minimum player count to participate in ${tournament.game} events."
+              );
+              return;
+            }
+            for (int i = 0; i < teamsJson["users"].length; i++) {
+              if (teamsJson["users"][i]["user"]["connections"]["valorantId"] == "null") {
+                CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.error,
+                    borderRadius: 8,
+                    width: 300,
+                    confirmBtnColor: pelRed,
+                    title: "Team not eligible!",
+                    text: "You're team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their ${tournament.game} account to their profile."
+                );
+                return;
+              }
+              if (tournament.division == "2" && teamsJson["users"][i]["user"]["connections"]["trackerValorant"] == "null") {
+                CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.error,
+                    borderRadius: 8,
+                    width: 300,
+                    confirmBtnColor: pelRed,
+                    title: "Team not eligible!",
+                    text: "You're team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their ${tournament.game} tracker.gg to their profile."
+                );
+                return;
+              }
+            }
+          }
+
+          registerTournament(team);
+        }
+        else {
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              borderRadius: 8,
+              width: 300,
+              confirmBtnColor: pelRed,
+              title: "Error getting team!",
+              text: jsonDecode(value.body)["data"]["message"]
+          );
+        }
+      });
+    });
   }
 
   Future<void> registerTournament(Team team) async {
@@ -201,6 +279,14 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
             registering = false;
             registered = true;
           });
+          var tournamentsJson = jsonDecode(value.body)["data"];
+          for (int i = 0; i < tournamentsJson.length; i++) {
+            if (tournamentsJson[i]["id"] == tournament.id) {
+              setState(() {
+                battlefyCode = tournamentsJson[i]["teams"][0]["battlefyCode"];
+              });
+            }
+          }
           CoolAlert.show(
               context: context,
               type: CoolAlertType.success,
@@ -218,43 +304,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
               borderRadius: 8,
               width: 300,
               confirmBtnColor: pelRed,
-              title: "Error getting teams!",
-              text: jsonDecode(value.body)["data"]["message"]
-          );
-        }
-      });
-    });
-  }
-
-  Future<void> getTournamentCode() async {
-    await AuthService.getAuthToken().then((_) async {
-      await http.get(Uri.parse("$API_HOST/api/tournaments/${tournament.id}/codes"), headers: {"Authorization": authToken}).then((value) {
-        if (value.statusCode == 200) {
-          if (jsonDecode(value.body)["data"].toString().length < 12) {
-            setState(() {
-              battlefyCode = jsonDecode(value.body)["data"];
-            });
-          }
-          else {
-            CoolAlert.show(
-                context: context,
-                type: CoolAlertType.error,
-                borderRadius: 8,
-                width: 300,
-                confirmBtnColor: pelRed,
-                title: "Error!",
-                text: jsonDecode(value.body)["data"]
-            );
-          }
-        }
-        else {
-          CoolAlert.show(
-              context: context,
-              type: CoolAlertType.error,
-              borderRadius: 8,
-              width: 300,
-              confirmBtnColor: pelRed,
-              title: "Error!",
+              title: "Error registering team!",
               text: jsonDecode(value.body)["data"]["message"]
           );
         }
@@ -457,7 +507,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                                             child: InkWell(
                                                               borderRadius: BorderRadius.all(Radius.circular(8)),
                                                               onTap: () {
-                                                                registerTournament(team);
+                                                                canRegister(team);
                                                               },
                                                               child: Container(
                                                                 padding: EdgeInsets.all(8),
@@ -567,25 +617,18 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                                   child: Column(
                                                     children: [
                                                       Text(
-                                                        battlefyCode != "_ _ _ _ _ _ _" ? "Don't forget to register on Battlefy with the code below!"
-                                                        : "Click the button below to get your Battlefy code!",
+                                                        "Don't forget to register on Battlefy with the code below!",
                                                         style: TextStyle(color: currTextColor, fontSize: 16),
                                                       ),
+                                                      Padding(padding: EdgeInsets.all(4)),
                                                       Row(
                                                         children: [
                                                           Expanded(
                                                             child: SelectableText(
                                                               battlefyCode,
                                                               style: TextStyle(color: currTextColor, fontSize: 35),
+                                                              textAlign: TextAlign.center,
                                                             ),
-                                                          ),
-                                                          CupertinoButton(
-                                                            padding: EdgeInsets.all(16),
-                                                            child: Text("Get Code", style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),),
-                                                            color: pelBlue,
-                                                            onPressed: () {
-                                                              getTournamentCode();
-                                                            },
                                                           ),
                                                         ],
                                                       ),
@@ -622,9 +665,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                           child: InkWell(
                                             borderRadius: BorderRadius.all(Radius.circular(8)),
                                             onTap: () {
-                                              if (currUser.roles.contains("ADMIN")) {
-                                                router.navigateTo(context, "/teams/${team.id}", transition: TransitionType.fadeIn);
-                                              }
+                                              router.navigateTo(context, "/teams/${team.id}", transition: TransitionType.fadeIn);
                                             },
                                             child: Container(
                                               padding: EdgeInsets.all(8),
@@ -674,10 +715,8 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                                         },
                                                       )
                                                   ),
-                                                  Visibility(
-                                                      visible: currUser.roles.contains("ADMIN"),
-                                                      child: Icon(Icons.arrow_forward_ios, color: currDividerColor,)
-                                                  )
+                                                  Padding(padding: EdgeInsets.all(8)),
+                                                  Icon(Icons.arrow_forward_ios, color: currDividerColor,)
                                                 ],
                                               ),
                                             ),
@@ -860,7 +899,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                                         child: InkWell(
                                                           borderRadius: BorderRadius.all(Radius.circular(8)),
                                                           onTap: () {
-                                                            registerTournament(team);
+                                                            canRegister(team);
                                                           },
                                                           child: Container(
                                                             padding: EdgeInsets.all(8),
@@ -970,8 +1009,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                battlefyCode != "_ _ _ _ _ _ _" ? "Don't forget to register on Battlefy with the code below!"
-                                                    : "Click the button below to get your Battlefy code!",
+                                                "Don't forget to register on Battlefy with the code below!",
                                                 style: TextStyle(color: currTextColor, fontSize: 16),
                                               ),
                                               Row(
@@ -981,14 +1019,6 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                                       battlefyCode,
                                                       style: TextStyle(color: currTextColor, fontSize: 35),
                                                     ),
-                                                  ),
-                                                  CupertinoButton(
-                                                    padding: EdgeInsets.all(16),
-                                                    child: Text("Get Code", style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),),
-                                                    color: pelBlue,
-                                                    onPressed: () {
-                                                      getTournamentCode();
-                                                    },
                                                   ),
                                                 ],
                                               ),
@@ -1023,9 +1053,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.all(Radius.circular(8)),
                                       onTap: () {
-                                        if (currUser.roles.contains("ADMIN")) {
-                                          router.navigateTo(context, "/teams/${team.id}", transition: TransitionType.native);
-                                        }
+                                        router.navigateTo(context, "/teams/${team.id}", transition: TransitionType.native);
                                       },
                                       child: Container(
                                         padding: EdgeInsets.all(8),
@@ -1075,10 +1103,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                                   },
                                                 )
                                             ),
-                                            Visibility(
-                                                visible: currUser.roles.contains("ADMIN"),
-                                                child: Icon(Icons.arrow_forward_ios, color: currDividerColor,)
-                                            )
+                                            Icon(Icons.arrow_forward_ios, color: currDividerColor,)
                                           ],
                                         ),
                                       ),
