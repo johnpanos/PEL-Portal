@@ -135,19 +135,19 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
 
   String getUsername(User user) {
     if (team.game == "VALORANT") {
-      return "Riot ID: ${user.connections?.valorantId}";
+      return "Riot ID: ${user.connections?.valorantId != "null" ? user.connections?.valorantId : "Not Connected"}";
     }
     else if (team.game == "League of Legends") {
-      return "Riot ID: ${user.connections?.leagueId}";
+      return "Riot ID: ${user.connections?.leagueId != "null" ? user.connections?.leagueId : "Not Connected"}";
     }
     else if (team.game == "Overwatch") {
-      return "BattleTag: ${user.connections?.battleTag}";
+      return "BattleTag: ${user.connections?.battleTag != "null" ? user.connections?.battleTag : "Not Connected"}";
     }
     else if (team.game == "Rocket League") {
-      return "Rocket ID: ${user.connections?.rocketId}";
+      return "Rocket ID: ${user.connections?.rocketId != null ? user.connections?.rocketId : "Not Connected"}";
     }
     else if (team.game == "Splitgate") {
-      return "Steam ID: ${user.connections?.steamId?.split("/id/")[1]}";
+      return "Steam ID: ${user.connections?.steamId != "null" ? user.connections?.steamId?.split("/id/")[1] : "Not Connected"}";
     }
     else {
       return "Game not found";
@@ -299,10 +299,10 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                       textAlign: TextAlign.center,
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Visibility(
-                                                      visible: user.roles.contains("${team.id}-CAPTAIN"),
+                                                  Visibility(
+                                                    visible: user.roles.contains("${team.id}-CAPTAIN"),
+                                                    child: Expanded(
+                                                      flex: 1,
                                                       child: Card(
                                                         color: pelGreen,
                                                         child: Container(
@@ -314,23 +314,26 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                   ),
                                                   Visibility(
                                                     visible: currUser.roles.contains("${team.id}-CAPTAIN") && user.id != currUser.id,
-                                                    child: CupertinoButton(
-                                                      child: Text("Remove", style: TextStyle(color: pelRed, fontFamily: "Ubuntu"),),
-                                                      onPressed: () {
-                                                        CoolAlert.show(
-                                                            context: context,
-                                                            type: CoolAlertType.confirm,
-                                                            borderRadius: 8,
-                                                            onConfirmBtnTap: () {
-                                                              removeMember(user);
-                                                              router.pop(context);
-                                                            },
-                                                            width: 300,
-                                                            confirmBtnColor: pelBlue,
-                                                            title: "Are you sure?",
-                                                            text: "Are you sure you want to remove this team member?"
-                                                        );
-                                                      },
+                                                    child: Expanded(
+                                                      flex: 1,
+                                                      child: CupertinoButton(
+                                                        child: Text("Remove", style: TextStyle(color: pelRed, fontFamily: "Ubuntu"),),
+                                                        onPressed: () {
+                                                          CoolAlert.show(
+                                                              context: context,
+                                                              type: CoolAlertType.confirm,
+                                                              borderRadius: 8,
+                                                              onConfirmBtnTap: () {
+                                                                removeMember(user);
+                                                                router.pop(context);
+                                                              },
+                                                              width: 300,
+                                                              confirmBtnColor: pelBlue,
+                                                              title: "Are you sure?",
+                                                              text: "Are you sure you want to remove this team member?"
+                                                          );
+                                                        },
+                                                      ),
                                                     )
                                                   )
                                                 ],
@@ -466,13 +469,11 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                   SelectableText(
                                                     "Discord: ${user.connections?.discordTag}",
                                                     style: TextStyle(color: currTextColor, fontSize: 16),
-                                                    textAlign: TextAlign.center,
                                                   ),
                                                   Padding(padding: EdgeInsets.all(2)),
                                                   SelectableText(
                                                     getUsername(user),
                                                     style: TextStyle(color: currTextColor, fontSize: 16),
-                                                    textAlign: TextAlign.center,
                                                   ),
                                                   Padding(padding: EdgeInsets.all(2)),
                                                   Visibility(
@@ -481,7 +482,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                       color: pelGreen,
                                                       child: Container(
                                                         padding: EdgeInsets.all(8),
-                                                        child: Text("Team Captain", style: TextStyle(color: Colors.white, fontSize: 16), textAlign: TextAlign.center,),
+                                                        child: Text("Team Captain", style: TextStyle(color: Colors.white, fontSize: 16)),
                                                       ),
                                                     ),
                                                   ),
