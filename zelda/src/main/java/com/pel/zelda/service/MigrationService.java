@@ -87,7 +87,8 @@ public class MigrationService {
                             "\tbattle_token varchar,\n" +
                             "\tsteam_id varchar,\n" +
                             "\tsteam_token varchar,\n" +
-                            "\trocket_id varchar\n" +
+                            "\trocket_id varchar,\n" +
+                            "\ttracker_valorant varchar\n" +
                             ");";
                     db.createStatement().execute(sql);
                     System.out.println("CREATED CONNECTION TABLE");

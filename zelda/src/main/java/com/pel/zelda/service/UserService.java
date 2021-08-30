@@ -62,6 +62,7 @@ public class UserService {
                 user.connections.steamId = (rs3.getString("steam_id"));
                 user.connections.steamToken = (rs3.getString("steam_token"));
                 user.connections.rocketId = (rs3.getString("rocket_id"));
+                user.connections.trackerValorant = (rs3.getString("tracker_valorant"));
             }
             rs3.close();
             // Get Verification for User
@@ -117,6 +118,7 @@ public class UserService {
                 user.connections.steamId = (rs3.getString("steam_id"));
                 user.connections.steamToken = (rs3.getString("steam_token"));
                 user.connections.rocketId = (rs3.getString("rocket_id"));
+                user.connections.trackerValorant = (rs3.getString("tracker_valorant"));
             }
             rs3.close();
             // Get Verification for User
@@ -170,7 +172,8 @@ public class UserService {
                     "'" + user.connections.battleToken + "'," +
                     "'" + user.connections.steamId + "'," +
                     "'" + user.connections.steamToken + "'," +
-                    "'" + user.connections.rocketId + "'" +
+                    "'" + user.connections.rocketId + "'," +
+                    "'" + user.connections.trackerValorant + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
         }
@@ -231,7 +234,8 @@ public class UserService {
                     "'" + user.connections.battleToken + "'," +
                     "'" + user.connections.steamId + "'," +
                     "'" + user.connections.steamToken + "'," +
-                    "'" + user.connections.rocketId + "'" +
+                    "'" + user.connections.rocketId + "'," +
+                    "'" + user.connections.trackerValorant + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
         }

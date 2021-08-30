@@ -25,7 +25,7 @@ public class TournamentController {
         addTournamentTeam();
         removeTournamentTeam();
         addTournamentCode();
-        getTournamentCode();
+        getTournamentCodes();
     }
 
     private void getAllTournaments() {
@@ -125,14 +125,14 @@ public class TournamentController {
         });
     }
 
-    private void getTournamentCode() {
+    private void getTournamentCodes() {
         get("/tournaments/:uid/codes", (req, res) -> {
             if (TournamentService.getTournament(Integer.parseInt(req.params(":uid"))).id == null) {
                 res.status(404);
                 res.body("{\"message\": \"Requested tournament could not be found\"}");
                 return res;
             }
-            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(TournamentService.getTournamentCode(Integer.parseInt(req.params(":uid")))));
+            res.body(new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss.S").create().toJson(TournamentService.getAllTournamentCodes(Integer.parseInt(req.params(":uid")))));
             return res;
         });
     }

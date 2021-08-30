@@ -21,8 +21,6 @@ import static com.pel.midna.Application.db;
  */
 public class TournamentService {
 
-    Gson gson = new Gson();
-
     public static List<Tournament> getAllTournaments() throws SQLException {
         List<Tournament> returnList = new ArrayList<>();
         String sql = "select * from \"tournament\";";
@@ -48,6 +46,7 @@ public class TournamentService {
             while (rs2.next()) {
                 Map map = new HashMap<>();
                 map.put("createdAt", rs2.getTimestamp("created_at"));
+                map.put("battlefyCode", rs2.getString("battlefy_code"));
                 map.put("teamId", rs2.getInt("team_id"));
                 tournament.teams.add(map);
             }
@@ -82,6 +81,7 @@ public class TournamentService {
             while (rs2.next()) {
                 Map map = new HashMap<>();
                 map.put("createdAt", rs2.getTimestamp("created_at"));
+                map.put("battlefyCode", rs2.getString("battlefy_code"));
                 map.put("teamId", rs2.getInt("team_id"));
                 tournament.teams.add(map);
             }
@@ -148,6 +148,7 @@ public class TournamentService {
             Tournament tournament = new Tournament();
             Map map = new HashMap<>();
             map.put("createdAt", rs.getTimestamp("created_at"));
+            map.put("battlefyCode", rs.getString("battlefy_code"));
             map.put("teamId", rs.getInt("team_id"));
             tournament.teams.add(map);
             sql = "select * from \"tournament\" where tournament.id = " + rs.getInt("tournament_id") + ";";
@@ -183,6 +184,7 @@ public class TournamentService {
                         "(\n" +
                         "" + teamId + ",\n" +
                         "" + tournamentId + ",\n" +
+                        "'" + getTournamentCode(tournamentId) + "',\n" +
                         " '" + Timestamp.valueOf(LocalDateTime.now()) + "'\n" +
                         ");";
                 db.createStatement().executeUpdate(sql);
@@ -210,7 +212,7 @@ public class TournamentService {
     }
 
     public static String getTournamentCode(Integer tournamentId) throws SQLException {
-        String code = "No codes available! Please please DM the ModMail bot on Discord or email us at contact@pacificesports.org.";
+        String code = "_ _ _ _ _ _ _";
         String sql = "select * from tournament_code where tournament_code.tournament_id= " + tournamentId + "limit 1;";
         ResultSet rs = db.createStatement().executeQuery(sql);
         while (rs.next()) {
@@ -221,6 +223,17 @@ public class TournamentService {
         }
         rs.close();
         return code;
+    }
+
+    public static List<String> getAllTournamentCodes(Integer tournamentId) throws SQLException {
+        List<String> codes = new ArrayList<>();
+        String sql = "select * from tournament_code where tournament_code.tournament_id= " + tournamentId + ";";
+        ResultSet rs = db.createStatement().executeQuery(sql);
+        while (rs.next()) {
+            codes.add(rs.getString("code"));
+        }
+        rs.close();
+        return codes;
     }
 
 }

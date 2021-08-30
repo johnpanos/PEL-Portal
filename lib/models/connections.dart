@@ -10,6 +10,7 @@ class Connections {
   String? steamId;
   String? steamToken;
   String? rocketId;
+  String? trackerValorant;
 
   Connections();
 
@@ -24,6 +25,7 @@ class Connections {
     steamId = json['steamId'];
     steamToken = json['steamToken'];
     rocketId = json['rocketId'];
+    trackerValorant = json['trackerValorant'];
   }
 
   Map<String, dynamic> toJson() => {
@@ -36,7 +38,8 @@ class Connections {
     'battleToken': battleToken ?? "null",
     'steamId': steamId ?? "null",
     'steamToken': steamToken ?? "null",
-    'rocketId': rocketId ?? "null"
+    'rocketId': rocketId ?? "null",
+    'trackerValorant': trackerValorant ?? "null"
   };
 
 }

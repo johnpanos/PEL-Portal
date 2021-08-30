@@ -17,5 +17,6 @@ public class Connection {
     public String steamId;
     public String steamToken;
     public String rocketId;
+    public String trackerValorant;
 
 }

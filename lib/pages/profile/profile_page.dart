@@ -131,13 +131,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Row(
                                       children: [
                                         Expanded(
-                                          child: TextField(
+                                          child: TextFormField(
                                             decoration: InputDecoration(
                                                 hintText: "First Name",
                                                 icon: Icon(Icons.person),
                                                 border: OutlineInputBorder()
                                             ),
-                                            controller: TextEditingController()..text = currUser.firstName!,
+                                            initialValue: currUser.firstName!,
                                             onChanged: (input) {
                                               currUser.firstName = input;
                                               setState(() {
@@ -148,13 +148,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                         Padding(padding: EdgeInsets.all(8),),
                                         Expanded(
-                                          child: TextField(
+                                          child: TextFormField(
                                             decoration: InputDecoration(
                                                 hintText: "Last Name",
                                                 icon: Icon(Icons.person),
                                                 border: OutlineInputBorder()
                                             ),
-                                            controller: TextEditingController()..text = currUser.lastName!,
+                                            initialValue: currUser.lastName!,
                                             onChanged: (input) {
                                               currUser.lastName = input;
                                               setState(() {
@@ -166,13 +166,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ],
                                     ),
                                     Padding(padding: EdgeInsets.all(8),),
-                                    TextField(
+                                    TextFormField(
                                       decoration: InputDecoration(
                                           hintText: "Email",
                                           icon: Icon(Icons.mail),
                                           border: OutlineInputBorder()
                                       ),
-                                      controller: TextEditingController()..text = currUser.email!,
+                                      initialValue: currUser.email!,
                                       onChanged: (input) {
                                         currUser.email = input;
                                         setState(() {
@@ -502,6 +502,80 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ) : CupertinoButton(
                                           onPressed: () {
                                             updateUser();
+                                          },
+                                          color: pelBlue,
+                                          child: Text(
+                                            "Add",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          new Container(
+                            width: (MediaQuery.of(context).size.width > 1300) ? 1100 : MediaQuery.of(context).size.width - 50,
+                            padding: new EdgeInsets.only(left: 16, right: 16, top: 16),
+                            child: Card(
+                              child: Container(
+                                padding: EdgeInsets.all(16),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "Tracker Connections",
+                                      style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(8),),
+                                    Row(
+                                      children: [
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Image.asset("images/valorant_logo.png", height: 32, width: 32,),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Expanded(
+                                          child: TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "Valorant Tracker URL",
+                                                border: currUser.connections!.trackerValorant != "null" ? InputBorder.none : OutlineInputBorder()
+                                            ),
+                                            onChanged: (input) {
+                                              if (input.contains("tracker.gg/valorant/profile")) {
+                                                currUser.connections!.trackerValorant = input;
+                                              }
+                                            },
+                                            initialValue: currUser.connections!.trackerValorant != "null" ? currUser.connections!.trackerValorant! : null,
+                                            enabled: currUser.connections!.trackerValorant == "null",
+                                            style: TextStyle(color: currTextColor, fontSize: 16),
+                                          ),
+                                        ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        currUser.connections!.trackerValorant != "null" ? CupertinoButton(
+                                          onPressed: () {
+                                            currUser.connections!.trackerValorant = "null";
+                                            updateUser();
+                                          },
+                                          child: Text(
+                                            "Remove",
+                                            style: TextStyle(fontFamily: "Ubuntu", color: pelRed),
+                                          ),
+                                        ) : CupertinoButton(
+                                          onPressed: () {
+                                            if (currUser.connections!.trackerValorant!.contains("tracker.gg/valorant/profile")) {
+                                              updateUser();
+                                            }
+                                            else {
+                                              CoolAlert.show(
+                                                  context: context,
+                                                  type: CoolAlertType.error,
+                                                  borderRadius: 8,
+                                                  width: 300,
+                                                  confirmBtnColor: pelRed,
+                                                  title: "Error!",
+                                                  text: "Must be a valid tracker.gg valorant profile link!"
+                                              );
+                                            }
                                           },
                                           color: pelBlue,
                                           child: Text(

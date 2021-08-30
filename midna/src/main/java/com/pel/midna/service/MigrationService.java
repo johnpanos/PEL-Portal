@@ -60,6 +60,7 @@ public class MigrationService {
                             "(\n" +
                             "\tteam_id int,\n" +
                             "\ttournament_id int,\n" +
+                            "\tbattlefy_code varchar,\n" +
                             "\tcreated_at timestamp\n" +
                             ");";
                     db.createStatement().execute(sql);
