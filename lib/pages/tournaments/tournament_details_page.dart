@@ -44,6 +44,9 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
   List<Team> registerTeams = [];
 
   List<Team> teamList = [];
+  
+  List<String> codesList = [];
+  String newCodesList = "";
 
   _TournamentDetailsPageState(this.id);
 
@@ -55,6 +58,9 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
         AuthService.getUser(user.uid).then((_) {
           setState(() {});
           getTournament();
+          if (currUser.roles.contains("ADMIN")) {
+            getTournamentCodes();
+          }
         });
       }
       else {
@@ -83,6 +89,54 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
               width: 300,
               confirmBtnColor: pelRed,
               title: "Error!",
+              text: jsonDecode(value.body)["data"]["message"]
+          );
+        }
+      });
+    });
+  }
+
+  getTournamentCodes() async {
+    await AuthService.getAuthToken().then((_) async {
+      await http.get(Uri.parse("$API_HOST/api/tournaments/${int.parse(id)}/codes"), headers: {"Authorization": authToken}).then((value) async {
+        if (value.statusCode == 200) {
+          codesList.clear();
+          var codesJson = jsonDecode(value.body)["data"];
+          for (int i = 0; i < codesJson.length; i++) {
+            setState(() {
+              codesList.add(codesJson[i]);
+            });
+          }
+        }
+        else {
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              borderRadius: 8,
+              width: 300,
+              confirmBtnColor: pelRed,
+              title: "Error getting codes!",
+              text: jsonDecode(value.body)["data"]["message"]
+          );
+        }
+      });
+    });
+  }
+
+  uploadTournamentCodes(List<String> codes) async {
+    await AuthService.getAuthToken().then((_) async {
+      await http.post(Uri.parse("$API_HOST/api/tournaments/${int.parse(id)}/codes"), body: jsonEncode(codes), headers: {"Authorization": authToken}).then((value) async {
+        if (value.statusCode == 200) {
+          router.navigateTo(context, "/tournaments/${tournament.id}", transition: TransitionType.fadeIn, replace: true);
+        }
+        else {
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              borderRadius: 8,
+              width: 300,
+              confirmBtnColor: pelRed,
+              title: "Error uploading codes!",
               text: jsonDecode(value.body)["data"]["message"]
           );
         }
@@ -422,7 +476,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                               Padding(padding: EdgeInsets.all(8),),
                                               ListTile(
                                                 title: Text(
-                                                  "Season: ",
+                                                  "Season:",
                                                   style: TextStyle(color: currTextColor),
                                                 ),
                                                 trailing: Text(
@@ -432,7 +486,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                               ),
                                               ListTile(
                                                 title: Text(
-                                                  "Playoffs Start: ",
+                                                  "Playoffs Start:",
                                                   style: TextStyle(color: currTextColor),
                                                 ),
                                                 trailing: Text(
@@ -458,12 +512,12 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                               Padding(padding: EdgeInsets.all(8),),
                                               ListTile(
                                                 title: Text(
-                                                  "Registration: ",
+                                                  "Registration:",
                                                   style: TextStyle(color: currTextColor),
                                                 ),
                                                 trailing: Text(
                                                   "${DateFormat("yMMMd").format(tournament.registrationStart!)} – ${DateFormat("yMMMd").format(tournament.registrationEnd!)}",
-                                                  style: TextStyle(color: currTextColor),
+                                                  style: TextStyle(color: currTextColor, fontSize: 13),
                                                 ),
                                               ),
                                               Padding(padding: EdgeInsets.all(8),),
@@ -724,6 +778,79 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                                         ),
                                       )).toList(),
                                     )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          new Container(
+                            width: (MediaQuery.of(context).size.width > 1300) ? 1100 : MediaQuery.of(context).size.width - 50,
+                            padding: new EdgeInsets.only(left: 16, right: 16, top: 16),
+                            child: Card(
+                              child: Container(
+                                padding: EdgeInsets.all(16),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "ADMIN",
+                                      style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(8),),
+                                    Text("Battlefy Codes", style: TextStyle(fontSize: 20),),
+                                    Padding(padding: EdgeInsets.all(8),),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                // padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  "${codesList.toString()}",
+                                                  style: TextStyle(color: currTextColor, fontSize: 16),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(padding: EdgeInsets.all(8),),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              TextField(
+                                                decoration: InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  hintText: "Enter new codes here\n\nHint: Enter each code on a new line"
+                                                ),
+                                                maxLines: null,
+                                                onChanged: (input) {
+                                                  newCodesList = input;
+                                                },
+                                              ),
+                                              Padding(padding: EdgeInsets.all(8),),
+                                              Container(
+                                                width: double.infinity,
+                                                child: CupertinoButton(
+                                                  onPressed: () {
+                                                    if (newCodesList.replaceAll(new RegExp(r"\s+"), "") != "") {
+                                                      uploadTournamentCodes(newCodesList.split("\n"));
+                                                    }
+                                                  },
+                                                  color: pelBlue,
+                                                  child: Text(
+                                                    "Add",
+                                                    style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
