@@ -202,6 +202,11 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                         style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
                                       ),
                                       Padding(padding: EdgeInsets.all(8),),
+                                      Text(
+                                        "Team ${team.id}",
+                                        style: TextStyle(color: currDividerColor, fontSize: 20),
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8),),
                                       Container(
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -341,6 +346,13 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                             ),
                                           ),
                                         )).toList(),
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8),),
+                                      Center(
+                                        child: Text(
+                                          "Users can join your team using your Team Number!",
+                                          style: TextStyle(color: pelBlue, fontSize: 16),
+                                        )
                                       )
                                     ],
                                   ),

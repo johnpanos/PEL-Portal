@@ -262,7 +262,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                   width: 300,
                   confirmBtnColor: pelRed,
                   title: "Team not eligible!",
-                  text: "You're team has an average rank of ${team.avgRank}, which is too high to participate in ${tournament.game} Division ${tournament.division} events."
+                  text: "Your team has an average rank of ${team.avgRank}, which is too high to participate in ${tournament.game} Division ${tournament.division} events."
               );
               return;
             }
@@ -274,7 +274,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                   width: 300,
                   confirmBtnColor: pelRed,
                   title: "Team not eligible!",
-                  text: "You're team does not meet the minimum player count to participate in ${tournament.game} events."
+                  text: "Your team does not meet the minimum player count to participate in ${tournament.game} events."
               );
               return;
             }
@@ -287,7 +287,7 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                     width: 300,
                     confirmBtnColor: pelRed,
                     title: "Team not eligible!",
-                    text: "You're team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their ${tournament.game} account to their profile."
+                    text: "Your team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their ${tournament.game} account to their profile."
                 );
                 return;
               }
@@ -299,13 +299,102 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                     width: 300,
                     confirmBtnColor: pelRed,
                     title: "Team not eligible!",
-                    text: "You're team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their ${tournament.game} tracker.gg to their profile."
+                    text: "Your team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their ${tournament.game} tracker.gg to their profile."
                 );
                 return;
               }
             }
           }
-
+          // LEAGUE
+          if (tournament.game == "League of Legends") {
+            print(gameRanks[tournament.game]!.indexOf(team.avgRank!));
+            if (teamsJson["users"].length < 5) {
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.error,
+                  borderRadius: 8,
+                  width: 300,
+                  confirmBtnColor: pelRed,
+                  title: "Team not eligible!",
+                  text: "Your team does not meet the minimum player count to participate in ${tournament.game} events."
+              );
+              return;
+            }
+            for (int i = 0; i < teamsJson["users"].length; i++) {
+              if (teamsJson["users"][i]["user"]["connections"]["leagueId"] == "null") {
+                CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.error,
+                    borderRadius: 8,
+                    width: 300,
+                    confirmBtnColor: pelRed,
+                    title: "Team not eligible!",
+                    text: "Your team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their ${tournament.game} account to their profile."
+                );
+                return;
+              }
+            }
+          }
+          // ROCKET LEAGUE
+          if (tournament.game == "Rocket League") {
+            print(gameRanks[tournament.game]!.indexOf(team.avgRank!));
+            if (teamsJson["users"].length < 3) {
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.error,
+                  borderRadius: 8,
+                  width: 300,
+                  confirmBtnColor: pelRed,
+                  title: "Team not eligible!",
+                  text: "Your team does not meet the minimum player count to participate in ${tournament.game} events."
+              );
+              return;
+            }
+            for (int i = 0; i < teamsJson["users"].length; i++) {
+              if (teamsJson["users"][i]["user"]["connections"]["rocketId"] == "null") {
+                CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.error,
+                    borderRadius: 8,
+                    width: 300,
+                    confirmBtnColor: pelRed,
+                    title: "Team not eligible!",
+                    text: "Your team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their ${tournament.game} account to their profile."
+                );
+                return;
+              }
+            }
+          }
+          // SPLITGATE
+          if (tournament.game == "Splitgate") {
+            print(gameRanks[tournament.game]!.indexOf(team.avgRank!));
+            if (teamsJson["users"].length < 3) {
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.error,
+                  borderRadius: 8,
+                  width: 300,
+                  confirmBtnColor: pelRed,
+                  title: "Team not eligible!",
+                  text: "Your team does not meet the minimum player count to participate in ${tournament.game} events."
+              );
+              return;
+            }
+            for (int i = 0; i < teamsJson["users"].length; i++) {
+              if (teamsJson["users"][i]["user"]["connections"]["steamId"] == "null") {
+                CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.error,
+                    borderRadius: 8,
+                    width: 300,
+                    confirmBtnColor: pelRed,
+                    title: "Team not eligible!",
+                    text: "Your team member ${teamsJson["users"][i]["user"]["firstName"]} ${teamsJson["users"][i]["user"]["lastName"]} has not connected their Steam account to their profile."
+                );
+                return;
+              }
+            }
+          }
           registerTournament(team);
         }
         else {
