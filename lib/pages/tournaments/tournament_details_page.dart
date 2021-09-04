@@ -872,75 +872,78 @@ class _TournamentDetailsPageState extends State<TournamentDetailsPage> {
                               ),
                             ),
                           ),
-                          new Container(
-                            width: (MediaQuery.of(context).size.width > 1300) ? 1100 : MediaQuery.of(context).size.width - 50,
-                            padding: new EdgeInsets.only(left: 16, right: 16, top: 16),
-                            child: Card(
-                              child: Container(
-                                padding: EdgeInsets.all(16),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "ADMIN",
-                                      style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
-                                    ),
-                                    Padding(padding: EdgeInsets.all(8),),
-                                    Text("Battlefy Codes", style: TextStyle(fontSize: 20),),
-                                    Padding(padding: EdgeInsets.all(8),),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                // padding: EdgeInsets.all(8),
-                                                child: Text(
-                                                  "${codesList.toString()}",
-                                                  style: TextStyle(color: currTextColor, fontSize: 16),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(padding: EdgeInsets.all(8),),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              TextField(
-                                                decoration: InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  hintText: "Enter new codes here\n\nHint: Enter each code on a new line"
-                                                ),
-                                                maxLines: null,
-                                                onChanged: (input) {
-                                                  newCodesList = input;
-                                                },
-                                              ),
-                                              Padding(padding: EdgeInsets.all(8),),
-                                              Container(
-                                                width: double.infinity,
-                                                child: CupertinoButton(
-                                                  onPressed: () {
-                                                    if (newCodesList.replaceAll(new RegExp(r"\s+"), "") != "") {
-                                                      uploadTournamentCodes(newCodesList.split("\n"));
-                                                    }
-                                                  },
-                                                  color: pelBlue,
+                          Visibility(
+                            visible: currUser.roles.contains("ADMIN"),
+                            child: new Container(
+                              width: (MediaQuery.of(context).size.width > 1300) ? 1100 : MediaQuery.of(context).size.width - 50,
+                              padding: new EdgeInsets.only(left: 16, right: 16, top: 16),
+                              child: Card(
+                                child: Container(
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "ADMIN",
+                                        style: TextStyle(fontFamily: "LEMONMILK", fontSize: 25, fontWeight: FontWeight.bold),
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8),),
+                                      Text("Battlefy Codes", style: TextStyle(fontSize: 20),),
+                                      Padding(padding: EdgeInsets.all(8),),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  // padding: EdgeInsets.all(8),
                                                   child: Text(
-                                                    "Add",
-                                                    style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
+                                                    "${codesList.toString()}",
+                                                    style: TextStyle(color: currTextColor, fontSize: 16),
                                                   ),
                                                 ),
-                                              )
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                          Padding(padding: EdgeInsets.all(8),),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                TextField(
+                                                  decoration: InputDecoration(
+                                                    border: OutlineInputBorder(),
+                                                    hintText: "Enter new codes here\n\nHint: Enter each code on a new line"
+                                                  ),
+                                                  maxLines: null,
+                                                  onChanged: (input) {
+                                                    newCodesList = input;
+                                                  },
+                                                ),
+                                                Padding(padding: EdgeInsets.all(8),),
+                                                Container(
+                                                  width: double.infinity,
+                                                  child: CupertinoButton(
+                                                    onPressed: () {
+                                                      if (newCodesList.replaceAll(new RegExp(r"\s+"), "") != "") {
+                                                        uploadTournamentCodes(newCodesList.split("\n"));
+                                                      }
+                                                    },
+                                                    color: pelBlue,
+                                                    child: Text(
+                                                      "Add",
+                                                      style: TextStyle(fontFamily: "Ubuntu", color: Colors.white),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
