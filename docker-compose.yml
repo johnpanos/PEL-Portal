@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+    db:
+        image: postgres:13.4
+        ports:
+            - 5432:5432
+        # Set these to real values
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            PGDATA: /var/lib/postgresql/data/pgdata
+            POSTGRES_DB: pel-portal
+        healthcheck:
+            test: pg_isready -U postgres
+
+    adminer:
+        image: adminer
+        ports:
+            - 8080:8080
+
+    zelda:
+        depends_on:
+            db:
+                condition: service_healthy
+        build: ./zelda
+        image: zelda:latest
+        ports:
+            - 6003:6003
+        environment:
+            PORT: 6003
+            JDBC: jdbc:postgresql://db:5432/pel-portal
+            # Set these to real values
+            # POSTGRES_USERNAME: postgres
+            # POSTGRES_PASSWORD: postgres
+
+    ganon:
+        build: ./ganon
+        ports:
+            - 6002:6002
+        
